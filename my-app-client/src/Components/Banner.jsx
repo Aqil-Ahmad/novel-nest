@@ -1,5 +1,5 @@
-import React from 'react'
-import BannerCard from '../homes/BannerCard'
+
+import BannerCard from '../home/BannerCard'
 
 const Banner = () => {
   return (

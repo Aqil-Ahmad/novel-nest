@@ -2,11 +2,11 @@ import {
   createBrowserRouter
 } from "react-router-dom";
 import App from '../App';
-import Home from "../homes/Home";
-import Shop from "../shops/Shop";
+import Home from "../home/Home";
+import Shop from "../shop/Shop";
 import About from "../Components/About";
-import Blog from "../Components/Blog";
-import SingleBook from "../shops/SingleBook";
+import ChapterReader from "../Components/ChapterReader";
+import SingleBook from "../shop/SingleBook";
 import DashboradLayout from "../dashboard/DashboradLayout";
 import Dashboard from "../dashboard/Dashboard";
 import UploadBook from "../dashboard/UploadBook";
@@ -18,7 +18,9 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import Logout from "../Components/Logout";
 import Profile from "../dashboard/Profile";
 import Details from "../dashboard/Details";
-
+import ChapterManagement from "../dashboard/ChapterManagement";
+import ReadNovel from "../Components/ReadNovel";
+import PDFViewer from "../Components/PDFViewer";
 
 const router = createBrowserRouter([
   {
@@ -36,15 +38,29 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <About />
-      }
-      ,{
-        path: "/blog",
-        element: <Blog />
-      }
-      ,{
+      },
+      // Updated routes for reading novels
+      {
+        path: "/ChapterReader",
+        element: <ReadNovel />
+      },
+      {
+        path: "/ChapterReader/:bookId",
+        element: <ChapterReader />
+      },
+      {
+        path: "/ChapterReader/:bookId/:chapterNumber",
+        element: <ChapterReader />
+      },
+      {
         path: "/book/:id",
         element: <SingleBook />,
-        loader: ({params}) => fetch(`http://localhost:3000/book/${params.id}`)
+        loader: ({params}) => fetch(`http://localhost:3000/api/books/${params.id}`)
+      },
+      {
+        path: "/book/:id/pdf",
+        element: <PDFViewer />,
+        loader: ({params}) => fetch(`http://localhost:3000/api/books/${params.id}`)
       }
     ]
   },
@@ -59,7 +75,6 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/upload",
         element: <UploadBook />
-
       },
       {
         path: "/admin/dashboard/manage",
@@ -75,23 +90,27 @@ const router = createBrowserRouter([
         element: <Profile />
       },
       {
-      path: "/admin/dashboard/details",
-      element: <Details />
+        path: "/admin/dashboard/details",
+        element: <Details />
+      },
+      {
+        path: "/admin/dashboard/chapters",
+        element: <PrivateRoute><ChapterManagement /></PrivateRoute>
       }
-
     ]
   },
   {
     path: "sign-up",
     element: <Signup />
-  },{
+  },
+  {
     path: "login",
     element: <Login />
-  },{
+  },
+  {
     path: "logout",
     element: <Logout />
   }
-  
 ]);
 
 export default router;

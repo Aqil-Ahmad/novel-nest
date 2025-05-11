@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -30,19 +30,20 @@ const Dashboard = () => {
         className="mySwiper"
       >
           <SwiperSlide style={{ 
-      backgroundImage: `url("https://c0.wallpaperflare.com/preview/757/248/881/blur-book-stack-books-bookshelves.jpg")`, width:'25%' ,height:'100%',borderRadius:'20px',paddingRight: '20%'
+      backgroundImage: `url("https://images.unsplash.com/photo-1481624362406-b7817fa45ecf?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGJvb2tzJTIwb24lMjBhJTIwdGFibGV8ZW58MHx8MHx8fDA%3D")`, width:'100%' ,height:'100%',borderRadius:'20px',paddingRight: '20%'
     }}>
+          
      
           
        
-          
           <div>
-          <p className='text-white' style={{ textAlign: 'flex-end',marginTop:'45%',marginLeft:'20%',fontSize:'20px',fontWeight:'bold' }}>
-          The more that you read, the more things you will know. The more that you learn, the more places you'll go.
+          <p className='text-white' style={{ textAlign: 'flex-end',marginTop:'10%',marginLeft:'20%',fontSize:'20px',fontWeight:'bold' }}>
+          The man who does not read has no advantage over the man who cannot read.
             </p>
             <div className='text-white' style={{ textAlign: 'flex-end',marginTop:'5%',marginLeft:'70%',fontSize:'20px',fontWeight:'bold'}} data-swiper-parallax="-300">
-          - Dr. Seuss
+            - Mark Twain
           </div>
+          
        
           </div>
         </SwiperSlide>
@@ -62,25 +63,23 @@ const Dashboard = () => {
        
           </div>
         </SwiperSlide>
+
         <SwiperSlide style={{ 
-      backgroundImage: `url("https://images.unsplash.com/photo-1481624362406-b7817fa45ecf?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGJvb2tzJTIwb24lMjBhJTIwdGFibGV8ZW58MHx8MHx8fDA%3D")`, width:'100%' ,height:'100%',borderRadius:'20px',paddingRight: '20%'
+      backgroundImage: `url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVhZGluZyUyMGJvb2tzfGVufDB8fDB8fHww")`, width:'100%' ,height:'100%',borderRadius:'20px',paddingRight: '20%'
     }}>
-     
-    
-          
           <div>
-          <p className='text-white' style={{ textAlign: 'flex-end',marginTop:'10%',marginLeft:'20%',fontSize:'20px',fontWeight:'bold' }}>
-          The man who does not read has no advantage over the man who cannot read.
+            <p className='text-white' style={{ textAlign: 'flex-end',marginTop:'45%',marginLeft:'20%',fontSize:'20px',fontWeight:'bold' }}>
+              The more that you read, the more things you will know. The more that you learn, the more places you will go.
             </p>
             <div className='text-white' style={{ textAlign: 'flex-end',marginTop:'5%',marginLeft:'70%',fontSize:'20px',fontWeight:'bold'}} data-swiper-parallax="-300">
-            - Mark Twain
-          </div>
-       
+              - Dr. Seuss
+            </div>
           </div>
         </SwiperSlide>
-     
+        <SwiperSlide style={{ 
+      backgroundImage: `url("https://c0.wallpaperflare.com/preview/757/248/881/blur-book-stack-books-bookshelves.jpg")`, width:'25%' ,height:'100%',borderRadius:'20px',paddingRight: '20%'
+    }}></SwiperSlide>
       </Swiper>
-     
     </>
   )
 }

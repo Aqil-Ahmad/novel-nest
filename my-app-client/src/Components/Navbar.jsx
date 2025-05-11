@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FaBarsStaggered, FaBlog, FaXmark } from "react-icons/fa6";
 import {Link} from 'react-router-dom';
 import { AuthContext } from '../contects/AuthProider';
@@ -35,7 +35,7 @@ const Navbar = () => {
     {link: "About",path: '/about'},
     {link: "Shop",path: '/shop'},
     {link: "Sell Your Book",path: '/admin/dashboard'},
-    {link: "Blog",path: '/blog'}
+    {link: "Read Novel",path: '/ChapterReader'}
   ]
   return (
     <header  className='w-full bg-transparent fixed top-0 left-0 right-0 transition-all ease-in duration-300'>

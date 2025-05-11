@@ -7,6 +7,7 @@ import {
   HiSupport,
   HiTable,
   HiUser,
+  HiBookOpen,
 } from "react-icons/hi";
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -55,6 +56,11 @@ const SideMenu = () => {
     setShowLogoutPopup(false);
   };
 
+  const handleUploadChapter = (e) => {
+    e.preventDefault();
+    navigate('/admin/dashboard/chapters');
+  };
+
   return (
     <div className="h-screen bg-black text-[#5DD62C] flex relative">
       <div className="flex flex-col h-full w-64 bg-black">
@@ -97,8 +103,8 @@ const SideMenu = () => {
               <p className="ml-3">Sign In</p>
             </SidebarItem>
 
-            <SidebarItem href="#" icon={HiChartPie}>
-              <p className="ml-3">Upgrade to Pro</p>
+            <SidebarItem href="#" icon={HiBookOpen} onClick={handleUploadChapter}>
+              <p className="ml-3">Upload Chapter</p>
             </SidebarItem>
 
             <SidebarItem href="/" icon={HiSupport}>
