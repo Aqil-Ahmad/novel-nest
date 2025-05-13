@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import userImg from "../assets/profile.jpg";
 import { AuthContext } from '../contects/AuthProider';
 import Logout from '../Components/Logout';  
+import Profile from '../dashboard/Profile';
 
 const SidebarItem = ({ href, icon: Icon, children, className, onClick }) => {
   return (
@@ -90,7 +91,7 @@ const SideMenu = () => {
             </SidebarItem>
 
             <SidebarItem href="/admin/dashboard/profile" icon={HiUser}>
-              <p className="ml-3">My Profile</p>
+              <p className="ml-3">User</p>
             </SidebarItem>
 
             <SidebarItem href="/logout" icon={HiTable} onClick={handleLogoutClick}>
@@ -99,6 +100,14 @@ const SideMenu = () => {
           </div>
 
           <div className="pt-4 mt-4 border-t border-gray-800">
+            <SidebarItem href="/login" icon={HiArrowSmRight}>
+              <p className="ml-3">Sign In</p>
+            </SidebarItem>
+
+            <SidebarItem href="#" icon={HiBookOpen} onClick={handleUploadChapter}>
+              <p className="ml-3">Upload Chapter</p>
+            </SidebarItem>
+
             <SidebarItem href="/" icon={HiSupport}>
               <p className="ml-3">Home</p>
             </SidebarItem>
@@ -118,3 +127,16 @@ const SideMenu = () => {
 };
 
 export default SideMenu;
+
+export const routes = [
+  {
+    path: '/admin/dashboard',
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: 'user-profile',
+        element: <Profile />
+      }
+    ]
+  }
+];

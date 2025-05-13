@@ -32,7 +32,6 @@ const ManageBooks = () => {
               <th className="py-4 px-6 text-[#5DD62C] font-bold text-left">Book name</th>
               <th className="py-4 px-6 text-[#5DD62C] font-bold text-left">Author Name</th>
               <th className="py-4 px-6 text-[#5DD62C] font-bold text-left">Category</th>
-              <th className="py-4 px-6 text-[#5DD62C] font-bold text-left">Prices</th>
               <th className="py-4 px-6 text-[#5DD62C] font-bold text-center">
                 <span>Edit or Manage</span>
               </th>
@@ -50,7 +49,6 @@ const ManageBooks = () => {
                 <td className="py-3 px-6 text-[#5DD62C] font-medium">{book.book_title}</td>
                 <td className="py-3 px-6 text-[#5DD62C]">{book.authorName}</td>
                 <td className="py-3 px-6 text-[#5DD62C]">{book.category}</td>
-                <td className="py-3 px-6 text-[#5DD62C]">Rs 500</td>
                 <td className="py-3 px-6 flex justify-center gap-3">
                   <Link
                     className="font-medium text-cyan-400 hover:text-cyan-300 hover:underline"

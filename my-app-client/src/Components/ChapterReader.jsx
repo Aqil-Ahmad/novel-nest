@@ -79,15 +79,15 @@ const ChapterReader = () => {
     setTheme(newTheme);
   };
 
-  // Get theme classes
+  // Update the theme classes
   const getThemeClasses = () => {
     switch (theme) {
       case 'dark':
-        return 'bg-gray-900 text-gray-100';
+        return 'bg-black text-[#5DD62C]';
       case 'sepia':
-        return 'bg-amber-50 text-amber-900';
+        return 'bg-[#1a1a1a] text-[#5DD62C]';
       default: // light
-        return 'bg-white text-gray-800';
+        return 'bg-gray-900 text-[#5DD62C]';
     }
   };
 
@@ -122,7 +122,7 @@ const ChapterReader = () => {
   return (
     <div className={`min-h-screen transition-colors duration-300 ${getThemeClasses()}`}>
       {/* Reader Header */}
-      <header className="sticky top-0 z-10 bg-black text-[#5DD62C] shadow-md">
+      <header className="sticky top-0 z-10 bg-black text-[#5DD62C] shadow-[0_4px_15px_0_rgba(93,214,44,0.5)]">
         <div className="container mx-auto p-4 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <h1 className="text-xl font-bold">{book.book_title}</h1>

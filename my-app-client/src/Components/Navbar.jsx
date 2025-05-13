@@ -65,10 +65,10 @@ const Navbar = () => {
             </button>
           </div>
         </div> 
-        {/*navItems for  small devices*/}
-        <div className={`space-y-4 px-4 mt-16 py-7 bg-gray-800 ${isMenuOpen ? "block fixed top-0 right-0 left-0" : "hidden"}`}>
+        {/*navItems for small devices*/}
+        <div className={`space-y-4 px-4 mt-0 py-7 bg-black ${isMenuOpen ? "block fixed top-16 right-0 left-0 border-t border-[#5DD62C]" : "hidden"}`}>
           {
-            navItems.map(({link,path}) => <Link key={path} to={path} className='block text-base text-[#5DD62C] uppercase cursor-pointer'>{link}</Link>)
+            navItems.map(({link,path}) => <Link key={path} to={path} className='block text-base text-[#5DD62C] uppercase cursor-pointer hover:bg-gray-800 p-2 rounded'>{link}</Link>)
           }
         </div>
       </nav>

@@ -34,8 +34,10 @@ const signup = async (req, res) => {
     const newUser = {
       email,
       password: hashedPassword,
-      name: email.split('@')[0], // Basic name from email
+      name: email.split('@')[0],
+      profilePic: '/default-avatar.png',  // Default profile picture
       isVerified: false,
+      status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
       role: 'user'
@@ -199,12 +201,16 @@ const getProfile = async (req, res) => {
         });
       }
       
-      // Return user data
+      // Include more user data in response
       const userData = {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isVerified: user.isVerified,
+        status: user.status || 'active', // Provide fallback for existing users
+        createdAt: user.createdAt,
+        avatar: user.avatar || null,
       };
       
       return res.json({

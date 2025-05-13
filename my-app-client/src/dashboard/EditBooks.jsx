@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Button, Checkbox, Label, Select, TextInput, Textarea } from "flowbite-react";
-import {useParams,useLoaderData} from 'react-router-dom'
-
+import { Button, Label, Select, TextInput, Textarea } from "flowbite-react";
+import {useParams, useLoaderData} from 'react-router-dom'
 
 const EditBooks = () => {
   const {id} = useParams();
@@ -27,8 +26,8 @@ const EditBooks = () => {
     "Religion",
     "Art"
   ]
-  const [selectedBookCategory,setSelectedBookCategory] = useState(bookCategories[0]);
-
+  const [selectedBookCategory, setSelectedBookCategory] = useState(category || bookCategories[0]);
+  
   const handleChangeSelectedValue = (event) => {
     setSelectedBookCategory(event.target.value);
   }
@@ -36,134 +35,124 @@ const EditBooks = () => {
     event.preventDefault();
     const form = event.target;
 
-    const book_title = form.book_title.value;
-    const authorName = form.authorName.value;
-    const image_url = form.image_url.value;
-    const  book_description = form.book_description.value;
-    const book_pdf_url = form.book_pdf_url.value;
-    const category = form.category.value;
-
     const updatebBookObj = {
-      book_title, authorName, image_url, book_description, book_pdf_url, category
+      book_title: form.book_title.value,
+      authorName: form.authorName.value,
+      image_url: form.image_url.value,
+      book_description: form.book_description.value,
+      book_pdf_url: form.book_pdf_url.value,
+      category: form.category.value
     }
-    // console.log(bookObj)
-    // send data to DB
-    fetch(`http://localhost:3000/book/${id}`,{
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatebBookObj)
-  }).then(res => res.json()).then(data => {
-    alert("Book Updated successfully!!!")
-  })
-   
-  } 
+
+    fetch(`http://localhost:3000/book/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatebBookObj)
+    }).then(res => res.json()).then(data => {
+      alert("Book Updated successfully!")
+    })
+  }
+
   return (
-    <div className='px-4 my-12'>
-      <h2 className='mb-8 text-3xl font-bold'>Update the book data</h2>
+    <div className='px-4 my-12 bg-black'>
+      <h2 className="text-3xl font-bold text-[#5DD62C] mb-6">Update Book</h2>
+      <div className="bg-black rounded-lg p-8 border border-[#5DD62C]/30">
+        <form onSubmit={handleUpdate} className="flex flex-col gap-6">
+          <div className='grid lg:grid-cols-2 gap-8'>
+            <div className='space-y-4'>
+              <div>
+                <Label htmlFor="book_title" value="Book Title" className="text-[#5DD62C] text-lg" />
+                <TextInput 
+                  id="book_title" 
+                  type="text" 
+                  name='book_title'
+                  placeholder="Enter book title" 
+                  required
+                  defaultValue={book_title}
+                  className="mt-2 bg-black border-[#5DD62C]/30 text-white placeholder-gray-400"
+                />
+              </div>
 
-      <form onSubmit={handleUpdate} className="flex lg:w-[1180px] flex-col flex-wrap gap-4">
-        {/*Form 1*/}
-      <div className='flex gap-8'>
-      <div className='lg:w-1/2'>
-        <div className="mb-2 block">
-          <Label 
-          htmlFor="book_title" 
-          value="Book Title" />
-        </div>
-        <TextInput 
-        id="book_title" 
-        type="text" 
-        name='book_title'
-        placeholder="Book Name" 
-        required
-        defaultValue={book_title}
-        />
-      </div>
+              <div>
+                <Label htmlFor="authorName" value="Author Name" className="text-[#5DD62C] text-lg" />
+                <TextInput 
+                  id="authorName" 
+                  name='authorName'
+                  type="text" 
+                  placeholder="Enter author name" 
+                  required
+                  defaultValue={authorName}
+                  className="mt-2 bg-black border-[#5DD62C]/30 text-white placeholder-gray-400"
+                />
+              </div>
 
-      <div className='lg:w-1/2'>
-        <div className="mb-2 block">
-          <Label 
-          htmlFor="authorName" 
-          value="Author Name" />
-        </div>
-        <TextInput 
-        id="authorName" 
-        name='authorName'
-        type="text" 
-        placeholder="Author Name" 
-        required
-        defaultValue={authorName}
-        />
-      </div>
-      </div>
-     {/*Form 2*/}
-     <div className='flex gap-8'>
-      <div className='lg:w-1/2'>
-        <div className="mb-2 block">
-          <Label 
-          htmlFor="image_url" 
-          value="Book image URL" />
-        </div>
-        <TextInput 
-        id="image_url" 
-        type="text" 
-        name='image_url'
-        placeholder="Book image URL" 
-        required
-        defaultValue={image_url}
-        />
-      </div>
+              <div>
+                <Label htmlFor="category" value="Book Category" className="text-[#5DD62C] text-lg" />
+                <Select 
+                  id="category" 
+                  name="category" 
+                  className='w-full mt-2 bg-gray-900 border-[#5DD62C]/30 text-white' 
+                  value={selectedBookCategory}
+                  onChange={handleChangeSelectedValue}
+                >
+                  {bookCategories.map((option) => (
+                    <option key={option} value={option} className="bg-gray-900 text-white">{option}</option>
+                  ))}
+                </Select>
+              </div>
+            </div>
 
-      <div className='lg:w-1/2'>
-      <div className="mb-2 block">
-          <Label 
-          htmlFor="imputState" 
-          value="Book Catagory" />
-        </div>
-        <Select id="category" name="categoryName" className='w-full rounded' value={selectedBookCategory} onChange={handleChangeSelectedValue}>
-          {
-          bookCategories.map((option) => <option key={option} value={option}>{option}</option>)
-          }
-        </Select>
-      </div>
-      </div>
-      {/*Book description*/}
-      <div>
-        <div className='mb-2 block'>
-          <Label 
-          htmlFor="book_description"
-          value="Book Description"
-          />
-        </div>
-        <Textarea 
-        id="book_description"
-        name="book_description"
-        placeholder='write you book description...'
-        required
-        className='w-full'
-        rows={4}
-        defaultValue={book_description}/>
-      </div>
+            <div className='space-y-4'>
+              <div>
+                <Label htmlFor="image_url" value="Book Cover Image URL" className="text-[#5DD62C] text-lg" />
+                <TextInput 
+                  id="image_url" 
+                  type="text" 
+                  name='image_url'
+                  placeholder="Enter image URL" 
+                  required
+                  defaultValue={image_url}
+                  className="mt-2 bg-black border-[#5DD62C]/30 text-white placeholder-gray-400"
+                />
+              </div>
 
-      {/*book pdf link*/}
-      <div>
-        <div className='mb-2 block'>
-          <Label 
-          htmlFor="book_pdf_url"
-          value="Book PDF URL"
-          />
-        </div>
-        <TextInput 
-        id="book_pdf_url"
-        name='book_pdf_url'
-        placeholder='book pdf url'
-        requiredtype='text'
-        defaultValue={book_pdf_url}/>
+              <div>
+                <Label htmlFor="book_description" value="Book Description" className="text-[#5DD62C] text-lg" />
+                <Textarea 
+                  id="book_description"
+                  name="book_description"
+                  placeholder='Write your book description...'
+                  required
+                  defaultValue={book_description}
+                  className='w-full mt-2 bg-white border-[#5DD62C]/30 text-gray-900 placeholder-gray-500'
+                  rows={5}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className='mt-6 p-6 bg-black rounded-lg border border-[#5DD62C]/30'>
+            <Label htmlFor="book_pdf_url" value="Book PDF URL" className="text-[#5DD62C] text-lg mb-3 block" />
+            <TextInput 
+              id="book_pdf_url"
+              name='book_pdf_url'
+              placeholder='Enter PDF URL'
+              required
+              defaultValue={book_pdf_url}
+              className="bg-black border-[#5DD62C]/30 text-white placeholder-gray-400"
+            />
+          </div>
+
+          <Button 
+            type="submit"
+            className="mt-6 bg-[#5DD62C] hover:bg-[#4cb824] text-black font-semibold py-3"
+          >
+            Update Book
+          </Button>
+        </form>
       </div>
-      <Button type="submit" >Update Book</Button>
-    </form>
     </div>
   )
 }
