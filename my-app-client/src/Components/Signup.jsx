@@ -8,6 +8,7 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
+  const [role, setRole] = useState('user');
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const Signup = () => {
     const email = form.email.value;
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
+    const role = form.role.value;
     
     if (password !== confirmPassword) {
       setError("Passwords do not match");
@@ -36,7 +38,7 @@ const Signup = () => {
     
     try {
       // Pass username in the createUser function if your backend supports it
-      const result = await createUser(email, password, username);
+      const result = await createUser(email, password, username, role);
       if (result.success) {
         alert("Sign up successful!");
         navigate(from, { replace: true });
@@ -150,6 +152,16 @@ const Signup = () => {
               required
               className="w-full px-4 py-2 rounded-full bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white/50"
             />
+            <select
+              name="role"
+              value={role}
+              onChange={e => setRole(e.target.value)}
+              className="w-full px-4 py-2 rounded-full bg-white/20 text-white focus:outline-none focus:ring-0"
+              required
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button
               type="submit"

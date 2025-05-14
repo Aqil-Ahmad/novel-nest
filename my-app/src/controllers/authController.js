@@ -2,11 +2,12 @@ const bcrypt = require('bcrypt');
 const { getDB } = require('../config/db');
 const { generateToken, googleClient } = require('../utils/auth');
 const { ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
 
 // Register a new user
 const signup = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     const { usersCollection } = getDB();
     
     // Basic validation
@@ -30,15 +31,25 @@ const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     
+    // Allow user to choose their own role (user or admin)
+    let assignedRole = 'user';
+    if (role === 'admin') {
+      assignedRole = 'admin';
+    } else if (role === 'user') {
+      assignedRole = 'user';
+    }
+
     // Create new user
     const newUser = {
       email,
       password: hashedPassword,
-      name: email.split('@')[0], // Basic name from email
+      name: email.split('@')[0],
+      profilePic: '/default-avatar.png',  // Default profile picture
       isVerified: false,
+      status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
-      role: 'user'
+      role: assignedRole
     };
     
     const result = await usersCollection.insertOne(newUser);
@@ -199,12 +210,16 @@ const getProfile = async (req, res) => {
         });
       }
       
-      // Return user data
+      // Include more user data in response
       const userData = {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isVerified: user.isVerified,
+        status: user.status || 'active', // Provide fallback for existing users
+        createdAt: user.createdAt,
+        avatar: user.avatar || null,
       };
       
       return res.json({

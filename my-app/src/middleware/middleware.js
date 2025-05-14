@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 
 const setupMiddleware = (app) => {
-  // Serve static files from uploads directory
+   // Serve static files from uploads directory
   app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
   // CORS middleware

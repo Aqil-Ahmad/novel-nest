@@ -9,6 +9,7 @@ const bookRoutes = require('./routes/bookRoutes');
 const chapterRoutes = require('./routes/chapterRoutes');
 const authRoutes = require('./routes/authRoutes');
 const pdfRoutes = require('./routes/pdfRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/chapters', chapterRoutes);
 app.use('/api/pdf', pdfRoutes);
+app.use('/api/users', userRoutes);
 
 // Legacy routes
 app.use('/all-books', (req, res) => {

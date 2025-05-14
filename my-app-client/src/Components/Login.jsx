@@ -131,14 +131,14 @@ const Login = () => {
               name="email"
               placeholder="Username"
               required
-              className="w-full px-4 py-2 rounded-full bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="w-full px-4 py-2 rounded-full bg-white/20 placeholder-white text-white focus:outline-none focus:ring-0"
             />
             <input
               type="password"
               name="password"
               placeholder="Password"
               required
-              className="w-full px-4 py-2 rounded-full bg-white/20 placeholder-white text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="w-full px-4 py-2 rounded-full bg-white/20 placeholder-white text-white focus:outline-none focus:ring-0"
             />
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <button

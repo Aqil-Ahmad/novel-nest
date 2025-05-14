@@ -3,7 +3,7 @@ import { AuthContext } from '../contects/AuthProider'
 import { Navigate, useLocation } from 'react-router-dom';
 import { Button, Spinner } from "flowbite-react";
 
-const PrivateRoute = ({children}) => {
+const PrivateRoute = ({children, role}) => {
   const {user, loading} = useContext(AuthContext);
   const location = useLocation();
 
@@ -15,10 +15,13 @@ const PrivateRoute = ({children}) => {
       </Button>
     </div>
   }
-  if(user){
+  if(user && (!role || user.role === role)){
     return children;
   }
-
+  // If user is logged in but not authorized for this role
+  if(user && role && user.role !== role){
+    return <div className="text-center text-red-500 mt-10">You are not authorized to access this page.</div>;
+  }
   return (
     <Navigate to="/login" state={{from: location}} replace></Navigate>
   )

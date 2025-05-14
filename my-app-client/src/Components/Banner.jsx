@@ -1,4 +1,3 @@
-
 import BannerCard from '../home/BannerCard'
 
 const Banner = () => {
@@ -10,7 +9,13 @@ const Banner = () => {
         <h2 className='text-5xl font-bold leading-snug text-white'>Buy and Sell Novels <span className='text-[#5DD62C]'>for the Best Prices</span></h2>
         <p className='md:w-4/54 text-white'>Books are the quietest and most constant of friends; they are the most accessible and wisest of counselors, and the most patient of teachers.</p>
         <div>
-          <input type='search' name='search' id='search' placeholder='search a book'className='py-2 px-2 rounded-s-sm outline-none'/>
+          <input 
+            type='search' 
+            name='search' 
+            id='search' 
+            placeholder='search a book'
+            className='py-2 px-2 rounded-s-sm focus:outline-none focus:ring-0'
+          />
           <button className='bg-[#5DD62C] px-6 py-2 text-white font-medium hover:bg-black transition-all ease-in duration-200'>Search</button>
         </div>
         </div>

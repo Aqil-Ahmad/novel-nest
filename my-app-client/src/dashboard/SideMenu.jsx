@@ -77,36 +77,54 @@ const SideMenu = () => {
 
         <div className="flex-1 px-3">
           <div className="space-y-1 pt-2">
-            <SidebarItem href="/admin/dashboard" icon={HiChartPie} className="mt-4">
-              <p className="ml-3">Dashboard</p>
-            </SidebarItem>
+            {/* Dashboard (role-based route) */}
+            {user?.role === 'admin' ? (
+              <SidebarItem href="/admin/dashboard" icon={HiChartPie} className="mt-4">
+                <p className="ml-3">Dashboard</p>
+              </SidebarItem>
+            ) : (
+              <SidebarItem href="/user/dashboard" icon={HiChartPie} className="mt-4">
+                <p className="ml-3">Dashboard</p>
+              </SidebarItem>
+            )}
 
-            <SidebarItem href="/admin/dashboard/upload" icon={HiOutlineCloudUpload}>
-              <p className="ml-3">Upload Book</p>
-            </SidebarItem>
+            {/* Admin-only options */}
+            {user?.role === 'admin' && (
+              <>
+                <SidebarItem href="/admin/dashboard/upload" icon={HiOutlineCloudUpload}>
+                  <p className="ml-3">Add Novel</p>
+                </SidebarItem>
+                <SidebarItem href="/admin/dashboard/manage" icon={HiInbox}>
+                  <p className="ml-3">Update Novel</p>
+                </SidebarItem>
+                <SidebarItem href="/admin/dashboard/profile-admin" icon={HiUser}>
+                  <p className="ml-3">Profile</p>
+                </SidebarItem>
+              </>
+            )}
 
-            <SidebarItem href="/admin/dashboard/manage" icon={HiInbox}>
-              <p className="ml-3">Manage Books</p>
-            </SidebarItem>
+            {/* User-only options */}
+            {user?.role === 'user' && (
+              <>
+                <SidebarItem href="/user/dashboard/history" icon={HiBookOpen}>
+                  <p className="ml-3">Novels History</p>
+                </SidebarItem>
+                <SidebarItem href="/user/dashboard/bookmarks" icon={HiBookOpen}>
+                  <p className="ml-3">Bookmarks</p>
+                </SidebarItem>
+                <SidebarItem href="/admin/dashboard/profile" icon={HiUser}>
+                  <p className="ml-3">Profile</p>
+                </SidebarItem>
+              </>
+            )}
 
-            <SidebarItem href="/admin/dashboard/profile" icon={HiUser}>
-              <p className="ml-3">User</p>
-            </SidebarItem>
-
+            {/* Logout (all roles) */}
             <SidebarItem href="/logout" icon={HiTable} onClick={handleLogoutClick}>
               <p className="ml-3">Log Out</p>
             </SidebarItem>
           </div>
 
           <div className="pt-4 mt-4 border-t border-gray-800">
-            <SidebarItem href="/login" icon={HiArrowSmRight}>
-              <p className="ml-3">Sign In</p>
-            </SidebarItem>
-
-            <SidebarItem href="#" icon={HiBookOpen} onClick={handleUploadChapter}>
-              <p className="ml-3">Upload Chapter</p>
-            </SidebarItem>
-
             <SidebarItem href="/" icon={HiSupport}>
               <p className="ml-3">Home</p>
             </SidebarItem>

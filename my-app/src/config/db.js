@@ -15,6 +15,7 @@ let db;
 let bookCollections;
 let usersCollection;
 let chapterCollection;
+let userHistoryCollection;
 
 const connectDB = async () => {
   try {
@@ -25,12 +26,14 @@ const connectDB = async () => {
     bookCollections = db.collection("Novels");
     usersCollection = db.collection("Users");
     chapterCollection = db.collection("Chapters");
+    userHistoryCollection = db.collection("userHistory");
 
     return {
       db,
       bookCollections,
       usersCollection,
-      chapterCollection
+      chapterCollection,
+      userHistoryCollection
     };
   } catch (error) {
     console.error("Database connection error:", error);
@@ -46,7 +49,8 @@ const getDB = () => {
     db,
     bookCollections,
     usersCollection,
-    chapterCollection
+    chapterCollection,
+    userHistoryCollection
   };
 };
 
