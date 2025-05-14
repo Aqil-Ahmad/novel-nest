@@ -5,6 +5,7 @@ const chapterController = require('../controllers/chapterController');
 // API chapter routes
 router.post('/', chapterController.createChapter);
 router.get('/:chapterId', chapterController.getChapterById);
+router.get('/book/:bookId', chapterController.getChaptersByBookId);
 router.patch('/:chapterId', chapterController.updateChapter);
 router.delete('/:chapterId', chapterController.deleteChapter);
 

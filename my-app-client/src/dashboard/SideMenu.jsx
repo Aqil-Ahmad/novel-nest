@@ -97,6 +97,9 @@ const SideMenu = () => {
                 <SidebarItem href="/admin/dashboard/manage" icon={HiInbox}>
                   <p className="ml-3">Update Novel</p>
                 </SidebarItem>
+                <SidebarItem href="/admin/dashboard/chapters" icon={HiBookOpen}>
+                  <p className="ml-3">Manage Chapters</p>
+                </SidebarItem>
                 <SidebarItem href="/admin/dashboard/profile-admin" icon={HiUser}>
                   <p className="ml-3">Profile</p>
                 </SidebarItem>

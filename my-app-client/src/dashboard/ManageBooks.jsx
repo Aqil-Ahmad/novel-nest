@@ -56,6 +56,12 @@ const ManageBooks = () => {
                   >
                     Edit
                   </Link>
+                  <Link
+                    className="font-medium text-[#5DD62C] hover:text-[#4cc01f] hover:underline"
+                    to={`/admin/dashboard/chapters?bookId=${book._id}`}
+                  >
+                    Manage Chapters
+                  </Link>
                   <button
                     className='bg-red-600 px-4 py-1 font-semibold text-white rounded-sm hover:bg-red-500'
                     onClick={() => handleDelete(book._id)}
