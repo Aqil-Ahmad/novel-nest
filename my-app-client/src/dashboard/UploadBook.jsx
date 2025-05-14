@@ -24,21 +24,10 @@ const UploadBook = () => {
     "Art"
   ]
   const [selectedBookCategory, setSelectedBookCategory] = useState(bookCategories[0]);
-  const [pdfFile, setPdfFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const handleChangeSelectedValue = (event) => {
     setSelectedBookCategory(event.target.value);
-  }
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      setPdfFile(file);
-    } else {
-      alert('Please select a PDF file');
-      event.target.value = null;
-    }
   }
 
   const handleBookSubmit = async (event) => {
@@ -46,19 +35,21 @@ const UploadBook = () => {
     setUploading(true);
 
     const form = event.target;
-    const formData = new FormData();
-    
-    formData.append('pdf', pdfFile);
-    formData.append('book_title', form.book_title.value);
-    formData.append('authorName', form.authorName.value);
-    formData.append('book_description', form.book_description.value);
-    formData.append('category', form.category.value);
-    formData.append('image_url', form.image_url.value);
+    const bookData = {
+      book_title: form.book_title.value,
+      authorName: form.authorName.value,
+      book_description: form.book_description.value,
+      category: form.category.value,
+      image_url: form.image_url.value
+    };
 
     try {
-      const response = await fetch("http://localhost:3000/api/books/upload-pdf", {
+      const response = await fetch("http://localhost:3000/api/books", {
         method: "POST",
-        body: formData
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookData)
       });
 
       const data = await response.json();
@@ -69,7 +60,6 @@ const UploadBook = () => {
 
       alert("Book uploaded successfully!");
       form.reset();
-      setPdfFile(null);
     } catch (error) {
       alert("Error uploading book: " + error.message);
     } finally {
@@ -149,33 +139,6 @@ const UploadBook = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className='mt-6 p-6 bg-black rounded-lg border border-[#5DD62C]/30'>
-            <Label htmlFor="pdf" value="Book PDF File" className="text-[#5DD62C] text-lg mb-3 block" />
-            <input
-              type="file"
-              id="pdf"
-              name="pdf"
-              accept=".pdf"
-              onChange={handleFileChange}
-              required
-              className="w-full text-sm text-gray-400
-                file:mr-4 file:py-3 file:px-6
-                file:rounded-lg file:border-0
-                file:text-sm file:font-semibold
-                file:bg-black file:text-white file:border file:border-[#5DD62C]/30
-                hover:file:bg-gray-900 
-                cursor-pointer"
-            />
-            {pdfFile && (
-              <p className="mt-3 text-sm text-gray-400 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                </svg>
-                {pdfFile.name}
-              </p>
-            )}
           </div>
 
           <Button 

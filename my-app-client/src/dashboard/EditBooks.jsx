@@ -4,7 +4,7 @@ import {useParams, useLoaderData} from 'react-router-dom'
 
 const EditBooks = () => {
   const {id} = useParams();
-  const {book_title, authorName, image_url, book_description, book_pdf_url, category} = useLoaderData()
+  const {book_title, authorName, image_url, book_description, category} = useLoaderData()
   const bookCategories = [
     "Fiction",
     "Non-Fiction",
@@ -40,7 +40,6 @@ const EditBooks = () => {
       authorName: form.authorName.value,
       image_url: form.image_url.value,
       book_description: form.book_description.value,
-      book_pdf_url: form.book_pdf_url.value,
       category: form.category.value
     }
 
@@ -131,18 +130,6 @@ const EditBooks = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className='mt-6 p-6 bg-black rounded-lg border border-[#5DD62C]/30'>
-            <Label htmlFor="book_pdf_url" value="Book PDF URL" className="text-[#5DD62C] text-lg mb-3 block" />
-            <TextInput 
-              id="book_pdf_url"
-              name='book_pdf_url'
-              placeholder='Enter PDF URL'
-              required
-              defaultValue={book_pdf_url}
-              className="bg-black border-[#5DD62C]/30 text-white placeholder-gray-400"
-            />
           </div>
 
           <Button 
