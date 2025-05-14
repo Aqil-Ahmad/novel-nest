@@ -115,8 +115,12 @@ const SideMenu = () => {
                 <SidebarItem href="/user/dashboard/bookmarks" icon={HiBookOpen}>
                   <p className="ml-3">Bookmarks</p>
                 </SidebarItem>
-                <SidebarItem href="/admin/dashboard/profile" icon={HiUser}>
-                  <p className="ml-3">Profile</p>
+                {/* Library option above My Profile */}
+                <SidebarItem href="http://localhost:5173/ChapterReader" icon={HiBookOpen}>
+                  <p className="ml-3">Library</p>
+                </SidebarItem>
+                <SidebarItem href="/user/dashboard/profile" icon={HiUser}>
+                  <p className="ml-3">My Profile</p>
                 </SidebarItem>
               </>
             )}

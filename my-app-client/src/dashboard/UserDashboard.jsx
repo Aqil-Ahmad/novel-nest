@@ -2,14 +2,18 @@ import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../contects/AuthProider';
 import { useNavigate } from 'react-router-dom';
 import SideMenu from './SideMenu';
-import { Pie } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
-  Legend
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
 } from 'chart.js';
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { startOfMonth, endOfMonth, format, eachDayOfInterval } from 'date-fns';
+ChartJS.register(ArcElement, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const UserDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -20,6 +24,10 @@ const UserDashboard = () => {
   const [chapterTitles, setChapterTitles] = useState({});
   const [categoryStats, setCategoryStats] = useState({});
   const [totalChaptersRead, setTotalChaptersRead] = useState(0);
+  const [totalBooksRead, setTotalBooksRead] = useState(0);
+  const [uniqueAuthors, setUniqueAuthors] = useState(0);
+  const [mostReadCategory, setMostReadCategory] = useState('');
+  const [barChartData, setBarChartData] = useState({ labels: [], data: [] });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,15 +87,49 @@ const UserDashboard = () => {
     if (history.length > 0 && Object.keys(bookDetails).length > 0) {
       let chaptersRead = 0;
       const categoryCount = {};
+      const booksReadSet = new Set();
+      const authorsSet = new Set();
+      const chaptersByDate = {};
       history.forEach(item => {
         chaptersRead += item.lastChapterRead ? 1 : 0;
         const book = bookDetails[item.bookId];
-        if (book && book.category) {
-          categoryCount[book.category] = (categoryCount[book.category] || 0) + 1;
+        if (book) {
+          booksReadSet.add(item.bookId);
+          if (book.category) {
+            categoryCount[book.category] = (categoryCount[book.category] || 0) + 1;
+          }
+          if (book.authorName) {
+            authorsSet.add(book.authorName);
+          }
+        }
+        if (item.updatedAt && item.lastChapterRead) {
+          const date = format(new Date(item.updatedAt), 'yyyy-MM-dd');
+          chaptersByDate[date] = (chaptersByDate[date] || 0) + 1;
         }
       });
       setTotalChaptersRead(chaptersRead);
       setCategoryStats(categoryCount);
+      setTotalBooksRead(booksReadSet.size);
+      setUniqueAuthors(authorsSet.size);
+      // Find most read category
+      let maxCat = '';
+      let maxVal = 0;
+      Object.entries(categoryCount).forEach(([cat, val]) => {
+        if (val > maxVal) {
+          maxCat = cat;
+          maxVal = val;
+        }
+      });
+      setMostReadCategory(maxCat);
+      // Bar chart: chapters read by date, show all days in current month
+      const now = new Date();
+      const start = startOfMonth(now);
+      const end = endOfMonth(now);
+      const allDays = eachDayOfInterval({ start, end });
+      const labels = allDays.map(day => format(day, 'yyyy-MM-dd'));
+      const displayLabels = allDays.map(day => format(day, 'MMM d'));
+      const data = labels.map(date => chaptersByDate[date] || 0);
+      setBarChartData({ labels: displayLabels, data });
     }
   }, [history, bookDetails]);
 
@@ -98,45 +140,97 @@ const UserDashboard = () => {
     <div className="flex min-h-screen bg-black">
       <SideMenu />
       <main className="flex-1">
-        <div className="p-8 max-w-3xl mx-auto">
+        <div className="p-8 max-w-5xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Your Reading Stats</h2>
-          {/* Stats Section */}
-          <div className="mb-8 flex flex-col md:flex-row gap-8 items-center justify-center">
-            <div className="bg-gray-900 rounded-lg p-6 shadow text-center">
-              <div className="text-4xl font-bold text-[#5DD62C]">{totalChaptersRead}</div>
-              <div className="text-lg text-gray-300">Chapters Read</div>
+          {/* Chart Section at the Top: Side by Side */}
+          <div className="mb-8 flex flex-col lg:flex-row gap-8 items-center justify-center w-full">
+            <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-sm flex-shrink-0 flex items-center justify-center">
+              <div className="w-full">
+                <div className="text-lg text-gray-300 mb-2 text-center">Novels Read by Category</div>
+                {Object.keys(categoryStats).length > 0 ? (
+                  <Pie
+                    data={{
+                      labels: Object.keys(categoryStats),
+                      datasets: [
+                        {
+                          data: Object.values(categoryStats),
+                          backgroundColor: [
+                            '#5DD62C', '#FFD700', '#1E90FF', '#FF69B4', '#FF6347', '#8A2BE2', '#00CED1', '#FFA500', '#A52A2A', '#228B22', '#DC143C', '#20B2AA', '#FF4500', '#2E8B57', '#B22222', '#00BFFF', '#FF1493', '#7FFF00', '#8B008B', '#556B2F'
+                          ],
+                          borderWidth: 1,
+                        },
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          labels: {
+                            color: '#5DD62C',
+                          },
+                        },
+                      },
+                    }}
+                    width={300}
+                    height={300}
+                  />
+                ) : (
+                  <div className="text-gray-500">No data yet</div>
+                )}
+              </div>
             </div>
-            <div className="bg-gray-900 rounded-lg p-6 shadow">
-              <div className="text-lg text-gray-300 mb-2 text-center">Novels Read by Category</div>
-              {Object.keys(categoryStats).length > 0 ? (
-                <Pie
+            {/* Bar Chart for Chapters Read by Date */}
+            <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-2xl flex-grow">
+              <div className="text-lg text-gray-300 mb-2 text-center">Chapters Read by Date</div>
+              {barChartData.labels.length > 0 ? (
+                <Bar
                   data={{
-                    labels: Object.keys(categoryStats),
+                    labels: barChartData.labels,
                     datasets: [
                       {
-                        data: Object.values(categoryStats),
-                        backgroundColor: [
-                          '#5DD62C', '#FFD700', '#1E90FF', '#FF69B4', '#FF6347', '#8A2BE2', '#00CED1', '#FFA500', '#A52A2A', '#228B22', '#DC143C', '#20B2AA', '#FF4500', '#2E8B57', '#B22222', '#00BFFF', '#FF1493', '#7FFF00', '#8B008B', '#556B2F'
-                        ],
-                        borderWidth: 1,
+                        label: 'Chapters Read',
+                        data: barChartData.data,
+                        backgroundColor: '#5DD62C',
+                        borderRadius: 6,
                       },
                     ],
                   }}
                   options={{
+                    responsive: true,
                     plugins: {
-                      legend: {
-                        labels: {
-                          color: '#5DD62C',
-                        },
+                      legend: { display: false },
+                    },
+                    scales: {
+                      x: {
+                        ticks: { color: '#5DD62C', font: { size: 11 }, maxRotation: 90, minRotation: 45, autoSkip: false },
+                        grid: { color: '#333' },
+                      },
+                      y: {
+                        beginAtZero: true,
+                        ticks: { color: '#5DD62C', font: { size: 12 } },
+                        grid: { color: '#333' },
                       },
                     },
                   }}
-                  width={220}
                   height={220}
                 />
               ) : (
                 <div className="text-gray-500">No data yet</div>
               )}
+            </div>
+          </div>
+          {/* Stats Section at the Bottom */}
+          <div className="mb-8 flex flex-col md:flex-row gap-8 items-center justify-center flex-wrap">
+            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+              <div className="text-4xl font-bold text-[#5DD62C]">{totalBooksRead}</div>
+              <div className="text-lg text-gray-300">Books Read</div>
+            </div>
+            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+              <div className="text-4xl font-bold text-[#5DD62C]">{uniqueAuthors}</div>
+              <div className="text-lg text-gray-300">Unique Authors</div>
+            </div>
+            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+              <div className="text-2xl font-bold text-[#5DD62C]">{mostReadCategory || 'N/A'}</div>
+              <div className="text-lg text-gray-300">Most Read Category</div>
             </div>
           </div>
           {/* Link to full reading history */}
