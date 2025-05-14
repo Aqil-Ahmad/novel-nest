@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Button, Label, TextInput, Textarea, Select } from "flowbite-react";
-
 
 const ChapterManagement = () => {
   const [loading, setLoading] = useState(false);
@@ -69,83 +67,94 @@ const ChapterManagement = () => {
   }
 
   return (
-    <div className='px-4 flex flex-col justify-center min-h-[calc(100vh-100px)]'>
-      {error && (
-        <div className="mb-4 p-4 text-red-700 bg-red-100 rounded-lg">
-          {error}
-        </div>
-      )}
-      
-      <form onSubmit={handleChapterSubmit} className="flex lg:w-[930px] flex-col flex-wrap gap-4">
-        <div className='flex gap-8'>
-          <div className='lg:w-1/2'>
-            <div className="mb-2 block">
-              <Label htmlFor="book" value="Select Book" />
+    <div className='min-h-screen bg-black py-8'>
+      <div className='max-w-4xl mx-auto px-4'>
+        <h2 className="text-4xl font-bold text-[#5DD62C] mb-8">Manage Chapters</h2>
+        
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+        
+        <div className="bg-black rounded-lg p-8 border border-[#5DD62C]/30">
+          <form onSubmit={handleChapterSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="book" className="block text-[#5DD62C] text-lg mb-2">Select Book</label>
+              <select
+                id="book"
+                value={selectedBook}
+                onChange={(e) => setSelectedBook(e.target.value)}
+                required
+                className="w-full p-3 bg-gray-900 border border-[#5DD62C]/30 rounded-lg text-white focus:outline-none focus:border-[#5DD62C]"
+              >
+                <option value="">Select a book</option>
+                {books.map(book => (
+                  <option key={book._id} value={book._id}>
+                    {book.book_title}
+                  </option>
+                ))}
+              </select>
             </div>
-            <Select 
-              id="book" 
-              value={selectedBook}
-              onChange={(e) => setSelectedBook(e.target.value)}
-              required
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="chapterTitle" className="block text-[#5DD62C] text-lg mb-2">Chapter Title</label>
+                <input
+                  type="text"
+                  id="chapterTitle"
+                  name="chapterTitle"
+                  placeholder="Enter chapter title"
+                  required
+                  className="w-full p-3 bg-gray-900 border border-[#5DD62C]/30 rounded-lg text-white focus:outline-none focus:border-[#5DD62C]"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="chapterNumber" className="block text-[#5DD62C] text-lg mb-2">Chapter Number</label>
+                <input
+                  type="number"
+                  id="chapterNumber"
+                  name="chapterNumber"
+                  placeholder="Enter chapter number"
+                  required
+                  min="1"
+                  className="w-full p-3 bg-gray-900 border border-[#5DD62C]/30 rounded-lg text-white focus:outline-none focus:border-[#5DD62C]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="content" className="block text-[#5DD62C] text-lg mb-2">Chapter Content</label>
+              <textarea
+                id="content"
+                name="content"
+                placeholder="Write your chapter content here..."
+                required
+                rows={10}
+                className="w-full p-3 bg-gray-900 border border-[#5DD62C]/30 rounded-lg text-white focus:outline-none focus:border-[#5DD62C]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#5DD62C] text-black font-semibold py-3 rounded-lg hover:bg-[#4cb824] transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
             >
-              {books.map(book => (
-                <option key={book._id} value={book._id}>
-                  {book.book_title}
-                </option>
-              ))}
-            </Select>
-          </div>
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-black border-t-transparent mr-3" />
+                  Uploading Chapter...
+                </div>
+              ) : (
+                'Upload Chapter'
+              )}
+            </button>
+          </form>
         </div>
-
-        <div className='flex gap-8'>
-          <div className='lg:w-1/2'>
-            <div className="mb-2 block">
-              <Label htmlFor="chapterTitle" value="Chapter Title" />
-            </div>
-            <TextInput 
-              id="chapterTitle" 
-              type="text" 
-              name='chapterTitle'
-              placeholder="Enter chapter title" 
-              required
-            />
-          </div>
-
-          <div className='lg:w-1/2'>
-            <div className="mb-2 block">
-              <Label htmlFor="chapterNumber" value="Chapter Number" />
-            </div>
-            <TextInput 
-              id="chapterNumber" 
-              type="number" 
-              name='chapterNumber'
-              placeholder="Enter chapter number" 
-              required
-              min="1"
-            />
-          </div>
-        </div>
-
-        <div>
-          <div className='mb-2 block'>
-            <Label htmlFor="content" value="Chapter Content" />
-          </div>
-          <Textarea 
-            id="content"
-            name="content"
-            placeholder='Write your chapter content here...'
-            required
-            className='w-full'
-            rows={10}
-          />
-        </div>
-
-        <Button type="submit" disabled={loading}>
-          {loading ? 'Uploading...' : 'Upload Chapter'}
-        </Button>
-      </form>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChapterManagement 
+export default ChapterManagement;
