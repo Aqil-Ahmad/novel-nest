@@ -88,20 +88,6 @@ const Profile = () => {
             {user?.displayName || user?.name || "Demo User"}
           </h5>
           <span className="text-gray-400">{user?.role}</span>
-          <div className="mt-6 flex space-x-3">
-            <a
-              href="/admin/dashboard/upload"
-              className="inline-flex items-center rounded-lg bg-[#5DD62C] px-4 py-2 text-sm font-medium text-black hover:bg-[#4cb824]"
-            >
-              Add Book
-            </a>
-            <a
-              href="/admin/dashboard/manage"
-              className="inline-flex items-center rounded-lg border border-[#5DD62C]/30 px-4 py-2 text-sm font-medium text-[#5DD62C] hover:bg-gray-900"
-            >
-              Manage Books
-            </a>
-          </div>
         </div>
         <div className="px-4 pb-4">
           <div className="grid md:grid-cols-2 gap-4">

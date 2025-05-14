@@ -21,8 +21,72 @@ import Details from "../dashboard/Details";
 import ChapterManagement from "../dashboard/ChapterManagement";
 import ReadNovel from "../Components/ReadNovel";
 import PDFViewer from "../Components/PDFViewer";
-import UserDashboard from '../dashboard/UserDashboard';
+import UserDashboard, { UserReadingHistoryTable } from '../dashboard/UserDashboard';
 import AdminProfile from "../dashboard/AdminProfile";
+import Bookmarks from '../dashboard/Bookmarks';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../contects/AuthProider';
+import { useNavigate } from 'react-router-dom';
+
+function UserReadingHistoryTableWrapper() {
+  const { user } = useContext(AuthContext);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [bookDetails, setBookDetails] = useState({});
+  const [chapterTitles, setChapterTitles] = useState({});
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:3000/api/users/history', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setHistory(data.history);
+        } else {
+          setError(data.message || 'Failed to fetch history');
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHistory();
+  }, []);
+  useEffect(() => {
+    const fetchBooksAndChapters = async () => {
+      if (history.length === 0) return;
+      const details = {};
+      const chapters = {};
+      await Promise.all(history.map(async (item) => {
+        try {
+          const res = await fetch(`http://localhost:3000/api/books/${item.bookId}`);
+          const data = await res.json();
+          if (data.success && data.book) {
+            details[item.bookId] = data.book;
+          }
+          if (item.lastChapterRead) {
+            const chapRes = await fetch(`http://localhost:3000/api/books/${item.bookId}/chapters/${item.lastChapterRead}`);
+            const chapData = await chapRes.json();
+            if (chapData.success && chapData.chapter) {
+              chapters[`${item.bookId}_${item.lastChapterRead}`] = chapData.chapter.title;
+            }
+          }
+        } catch (e) {}
+      }));
+      setBookDetails(details);
+      setChapterTitles(chapters);
+    };
+    fetchBooksAndChapters();
+  }, [history]);
+  if (loading) return <div className="text-center text-[#5DD62C]">Loading history...</div>;
+  if (error) return <div className="text-center text-red-500">{error}</div>;
+  return <UserReadingHistoryTable history={history} bookDetails={bookDetails} chapterTitles={chapterTitles} navigate={navigate} />;
+}
 
 const router = createBrowserRouter([
   {
@@ -111,11 +175,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/user/dashboard/history',
-    element: <PrivateRoute role="user"><UserDashboard /></PrivateRoute>
+    element: <UserReadingHistoryTableWrapper />
   },
   {
     path: '/user/dashboard/bookmarks',
-    element: <PrivateRoute role="user"><div className="p-8 text-[#5DD62C] text-2xl">Bookmarked Novels (Coming Soon)</div></PrivateRoute>
+    element: <PrivateRoute role="user"><Bookmarks /></PrivateRoute>
   },
   {
     path: "sign-up",

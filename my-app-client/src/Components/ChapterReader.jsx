@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contects/AuthProider';
+import BookmarkIcon from './BookmarkIcon';
 
 const ChapterReader = () => {
   const { bookId, chapterNumber = 1 } = useParams();
@@ -13,6 +14,7 @@ const ChapterReader = () => {
   const [error, setError] = useState(null);
   const [fontSize, setFontSize] = useState(16);
   const [theme, setTheme] = useState('light'); // 'light', 'dark', 'sepia'
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Fetch book details
   useEffect(() => {
@@ -77,6 +79,40 @@ const ChapterReader = () => {
       fetchChapter();
     }
   }, [bookId, chapterNumber]);
+
+  // Check bookmark state on load
+  useEffect(() => {
+    if (user && bookId && chapterNumber) {
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}');
+      const userBookmarks = bookmarks[user.email] || [];
+      setIsBookmarked(userBookmarks.some(b => b.bookId === bookId && b.chapterNumber === parseInt(chapterNumber)));
+    }
+  }, [user, bookId, chapterNumber]);
+
+  // Toggle bookmark
+  const handleBookmark = () => {
+    if (!user) return;
+    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '{}');
+    const userBookmarks = bookmarks[user.email] || [];
+    const idx = userBookmarks.findIndex(b => b.bookId === bookId && b.chapterNumber === parseInt(chapterNumber));
+    let updated;
+    if (idx > -1) {
+      updated = [...userBookmarks.slice(0, idx), ...userBookmarks.slice(idx + 1)];
+      setIsBookmarked(false);
+    } else {
+      updated = [...userBookmarks, {
+        bookId,
+        chapterNumber: parseInt(chapterNumber),
+        bookTitle: book?.book_title,
+        authorName: book?.authorName,
+        image_url: book?.image_url,
+        chapterTitle: chapter?.title
+      }];
+      setIsBookmarked(true);
+    }
+    bookmarks[user.email] = updated;
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  };
 
   // Navigate to next chapter
   const goToNextChapter = () => {
@@ -153,6 +189,8 @@ const ChapterReader = () => {
           </div>
           
           <div className="flex flex-wrap gap-4 items-center">
+            {/* Bookmark Banner Icon */}
+            <BookmarkIcon isBookmarked={isBookmarked} onClick={handleBookmark} />
             {/* Chapter Navigation */}
             <div className="flex gap-2">
               <button
