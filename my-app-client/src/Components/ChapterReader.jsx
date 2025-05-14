@@ -192,14 +192,13 @@ const ChapterReader = () => {
             {/* Bookmark Banner Icon */}
             <BookmarkIcon isBookmarked={isBookmarked} onClick={handleBookmark} />
             {/* Chapter Navigation */}
-            <div className="flex gap-2">
-              <button
+            <div className="flex gap-2">              <button
                 onClick={goToPreviousChapter}
                 disabled={parseInt(chapterNumber) <= 1}
                 className={`px-3 py-1 rounded ${
                   parseInt(chapterNumber) <= 1 
                     ? 'bg-gray-600 cursor-not-allowed' 
-                    : 'bg-[#5DD62C] text-black hover:bg-[#4cc01f]'
+                    : 'bg-[#5DD62C] text-black font-semibold hover:bg-[#4cc01f] transition-colors'
                 }`}
               >
                 Previous
@@ -208,14 +207,13 @@ const ChapterReader = () => {
               <span className="px-3 py-1 bg-gray-800 rounded">
                 {chapterNumber} / {book.totalChapters}
               </span>
-              
-              <button
+                <button
                 onClick={goToNextChapter}
                 disabled={parseInt(chapterNumber) >= book.totalChapters}
                 className={`px-3 py-1 rounded ${
                   parseInt(chapterNumber) >= book.totalChapters 
                     ? 'bg-gray-600 cursor-not-allowed' 
-                    : 'bg-[#5DD62C] text-black hover:bg-[#4cc01f]'
+                    : 'bg-[#5DD62C] text-black font-semibold hover:bg-[#4cc01f] transition-colors'
                 }`}
               >
                 Next
@@ -280,14 +278,13 @@ const ChapterReader = () => {
         />
         
         {/* Chapter Navigation Buttons */}
-        <div className="mt-10 flex justify-between">
-          <button
+        <div className="mt-10 flex justify-between">          <button
             onClick={goToPreviousChapter}
             disabled={parseInt(chapterNumber) <= 1}
             className={`px-4 py-2 rounded ${
               parseInt(chapterNumber) <= 1 
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                : 'bg-[#5DD62C] text-black hover:bg-[#4cc01f]'
+                : 'bg-[#5DD62C] text-black font-semibold hover:bg-[#4cc01f] transition-colors'
             }`}
           >
             ← Previous Chapter
@@ -299,7 +296,7 @@ const ChapterReader = () => {
             className={`px-4 py-2 rounded ${
               parseInt(chapterNumber) >= book.totalChapters 
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                : 'bg-[#5DD62C] text-black hover:bg-[#4cc01f]'
+                : 'bg-[#5DD62C] text-black font-semibold hover:bg-[#4cc01f] transition-colors'
             }`}
           >
             Next Chapter →

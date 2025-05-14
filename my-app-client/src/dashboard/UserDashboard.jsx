@@ -284,12 +284,11 @@ export function UserReadingHistoryTable({ history, bookDetails, chapterTitles, n
                       <td className="py-2">{item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</td>
                       <td className="py-2">{item.percentComplete || 0}%</td>
                       <td className="py-2">{item.updatedAt ? new Date(item.updatedAt).toLocaleString() : ''}</td>
-                      <td className="py-2">
-                        <button
-                          className="bg-[#5DD62C] text-black px-3 py-1 rounded hover:bg-[#4cc01f]"
+                      <td className="py-2">                        <button
+                          className="bg-[#5DD62C] text-black font-semibold px-4 py-1 rounded hover:bg-[#4cc01f] transition-colors"
                           onClick={() => navigate(`/ChapterReader/${item.bookId}/${item.lastChapterRead}`)}
                         >
-                          Continue
+                          Continue Reading
                         </button>
                       </td>
                     </tr>

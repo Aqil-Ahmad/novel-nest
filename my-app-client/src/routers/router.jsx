@@ -182,6 +182,10 @@ const router = createBrowserRouter([
     element: <PrivateRoute role="user"><Bookmarks /></PrivateRoute>
   },
   {
+    path: '/user/dashboard/profile',
+    element: <PrivateRoute role="user"><Profile /></PrivateRoute>
+  },
+  {
     path: "sign-up",
     element: <Signup />
   },

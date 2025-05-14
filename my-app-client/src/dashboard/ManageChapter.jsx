@@ -133,12 +133,10 @@ const ManageChapter = () => {
                 rows={12}
               />
             </div>
-          </div>
-
-          <Button 
+          </div>          <Button 
             type="submit" 
             disabled={loading}
-            className="mt-6 bg-[#5DD62C] hover:bg-[#4cb824] text-black font-semibold py-3"
+            className="mt-6 bg-[#5DD62C] hover:bg-[#4cc01f] text-black font-semibold py-3 transition-colors rounded"
           >
             {loading ? (
               <div className="flex items-center justify-center">

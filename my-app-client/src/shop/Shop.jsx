@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Card } from "flowbite-react";
-import { useLocation } from 'react-router-dom';
-import Image from "../assets/profile.jpg";
+import { useLocation, Link } from 'react-router-dom';
 
 const Shop = () => {
   const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
 
   // Get search query from URL
@@ -12,7 +12,17 @@ const Shop = () => {
   const search = params.get('search')?.toLowerCase() || '';
 
   useEffect(() => {
-    fetch("http://localhost:3000/all-books").then(res => res.json()).then(data => setBooks(data));
+    setLoading(true);
+    fetch("http://localhost:3000/all-books")
+      .then(res => res.json())
+      .then(data => {
+        setBooks(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching books:", err);
+        setLoading(false);
+      });
   },[])
 
   // Filter books if search query is present
@@ -24,31 +34,65 @@ const Shop = () => {
     : books;
 
   return (
-    <div className='min-h-screen bg-black px-4 lg:px-24 flex flex-col'>
-      <h1 className='text-5xl mt-24 mb-12 font-bold text-center text-[#5DD62C]'>All Books are here</h1>
-      <div className='grid gap-6 flex-1 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1'>
-        {
-          filteredBooks.map(book => (
-            <Card className='shadow-2xl bg-gray-900 text-white border border-gray-800 p-2 flex flex-col h-full' key={book._id}>
-              <img src={book.image_url} alt="" className='h-40 w-full object-contain bg-black rounded mb-2'/>
-              <h5 className="text-lg font-bold tracking-tight text-[#5DD62C] mx-2 mb-1 text-center">
-                <p className="text-lg text-center">{book.book_title}</p>
-              </h5>
-              <p className="font-normal text-gray-400 mx-2 text-sm mb-2 text-center">
-                {/* You can add a book description here if available */}
-              </p>
-              <div className="flex-1 flex flex-col justify-end">
-                <button
-                  className='bg-[#5DD62C] font-semibold text-black py-2 text-base rounded mx-2 mb-2 hover:bg-black hover:text-[#5DD62C] transition w-full'
-                  onClick={() => window.location.href = `/ChapterReader/${book._id}/1`}
-                >
-                  Read Now
-                </button>
+    <div className='min-h-screen bg-black px-4 lg:px-24 flex flex-col pb-10'>
+      <h1 className='text-5xl mt-16 mb-6 font-bold text-center text-[#5DD62C]'>
+        {search ? `Search Results for "${search}"` : 'All Books'}
+      </h1>
+      
+      {search && (
+        <div className='mb-6 flex justify-center'>
+          <Link to="/shop" className="text-sm text-[#5DD62C] hover:underline">
+            ← Back to all books
+          </Link>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5DD62C]"></div>
+        </div>
+      ) : filteredBooks.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-xl text-gray-400">No books found matching "{search}"</p>
+          <Link to="/shop" className="text-[#5DD62C] mt-4 inline-block hover:underline">
+            View all books instead
+          </Link>
+        </div>
+      ) : (
+        <div className='grid gap-8 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 pb-6'>
+          {filteredBooks.map(book => (
+            <Card 
+              className='bg-gray-900 text-white border border-gray-800 overflow-hidden flex flex-col' 
+              key={book._id}
+              style={{ height: '360px' }} // Fixed height for all cards
+            >
+              <div className="h-48 flex items-center justify-center bg-black p-2">
+                <img 
+                  src={book.image_url} 
+                  alt={book.book_title} 
+                  className='h-full w-auto object-contain max-w-full'
+                />
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h5 className="text-lg font-bold tracking-tight text-[#5DD62C] text-center line-clamp-2 mb-1">
+                  {book.book_title}
+                </h5>
+                <p className="text-gray-400 text-sm text-center mb-2">
+                  {book.authorName || 'Unknown Author'}
+                </p>
+                  <div className="flex-1 flex flex-col justify-end mt-auto">
+                  <button
+                    className='bg-[#5DD62C] text-black font-semibold py-2 px-4 rounded hover:bg-[#4cc01f] transition-colors w-full'
+                    onClick={() => window.location.href = `/ChapterReader/${book._id}/1`}
+                  >
+                    Read Now
+                  </button>
+                </div>
               </div>
             </Card>
-          ))
-        }
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

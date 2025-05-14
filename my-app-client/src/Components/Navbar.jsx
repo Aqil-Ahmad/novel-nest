@@ -55,9 +55,8 @@ const Navbar = () => {
 
           {/* Login/dashboard button at the right end */}
           <div className='hidden md:flex items-center'>
-            {!user ? (
-              <button
-                className="bg-[#5DD62C] text-black px-4 py-2 rounded hover:bg-green-600 transition-colors uppercase font-semibold ml-4"
+            {!user ? (              <button
+                className="bg-[#5DD62C] text-black px-4 py-2 rounded hover:bg-[#4cc01f] transition-colors uppercase font-semibold ml-4"
                 onClick={() => window.location.href = '/login'}
               >
                 Login
@@ -88,9 +87,8 @@ const Navbar = () => {
             ))
           }
           {/* Conditional button for login or dashboard (mobile) */}
-          {!user ? (
-            <button
-              className="bg-[#5DD62C] text-black px-4 py-2 rounded w-full hover:bg-green-600 transition-colors uppercase font-semibold"
+          {!user ? (            <button
+              className="bg-[#5DD62C] text-black px-4 py-2 rounded w-full hover:bg-[#4cc01f] transition-colors uppercase font-semibold"
               onClick={() => window.location.href = '/login'}
             >
               Login

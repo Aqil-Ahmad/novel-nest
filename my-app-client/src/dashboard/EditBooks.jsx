@@ -130,11 +130,9 @@ const EditBooks = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <Button 
+          </div>          <Button 
             type="submit"
-            className="mt-6 bg-[#5DD62C] hover:bg-[#4cb824] text-black font-semibold py-3"
+            className="mt-6 bg-[#5DD62C] hover:bg-[#4cc01f] text-black font-semibold py-3 transition-colors rounded"
           >
             Update Book
           </Button>

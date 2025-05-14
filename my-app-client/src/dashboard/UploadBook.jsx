@@ -139,12 +139,10 @@ const UploadBook = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <Button 
+          </div>          <Button 
             type="submit" 
             disabled={uploading}
-            className="mt-6 bg-[#5DD62C] hover:bg-[#4cb824] text-black font-semibold py-3"
+            className="mt-6 bg-[#5DD62C] hover:bg-[#4cc01f] text-black font-semibold py-3 transition-colors rounded"
           >
             {uploading ? (
               <div className="flex items-center justify-center">

@@ -5,6 +5,8 @@ const { getDB } = require('../config/db');
 const { ObjectId } = require('mongodb');
 const userHistoryController = require('../controllers/userHistoryController');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -38,10 +40,18 @@ router.post('/profile-pic', auth, upload.single('profilePic'), async (req, res) 
 
     const { usersCollection } = getDB();
     const imageUrl = `/uploads/${req.file.filename}`;
+    const imagePath = path.join(__dirname, '../../public/uploads', req.file.filename);
+    const imageBuffer = fs.readFileSync(imagePath);
 
     await usersCollection.updateOne(
       { _id: new ObjectId(req.user.id) },
-      { $set: { profilePic: imageUrl } }
+      {
+        $set: {
+          profilePic: imageUrl,
+          profilePicData: imageBuffer, // Store the image as a Buffer in MongoDB
+          profilePicType: req.file.mimetype // Store the mimetype for serving
+        }
+      }
     );
 
     res.json({
@@ -51,6 +61,21 @@ router.post('/profile-pic', auth, upload.single('profilePic'), async (req, res) 
   } catch (error) {
     console.error('Profile pic upload error:', error);
     res.status(500).json({ success: false, message: 'Error uploading profile picture' });
+  }
+});
+
+// Serve profile picture from DB as image
+router.get('/profile-pic/:userId', async (req, res) => {
+  try {
+    const { usersCollection } = getDB();
+    const user = await usersCollection.findOne({ _id: new ObjectId(req.params.userId) });
+    if (!user || !user.profilePicData) {
+      return res.status(404).send('No profile picture found');
+    }
+    res.set('Content-Type', user.profilePicType || 'image/jpeg');
+    res.send(user.profilePicData.buffer || user.profilePicData);
+  } catch (error) {
+    res.status(500).send('Error retrieving profile picture');
   }
 });
 

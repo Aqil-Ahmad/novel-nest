@@ -23,9 +23,8 @@ const FavBook = () => {
             <h3 className='text-3xl font-bold'>1200+</h3>
             <p className='text-base'>PDF downloads</p>
           </div>
-        </div>
-        <Link to="/shop" className='mt-12 block'>
-          <button className='bg-[#5DD62C] text-black font-semibold px-5 py-2 rounded hover:bg-white transition-all duration-300'>Explore More</button>
+        </div>        <Link to="/shop" className='mt-12 block'>
+          <button className='bg-[#5DD62C] text-black font-semibold px-5 py-2 rounded hover:bg-[#4cc01f] transition-colors'>Explore More</button>
         </Link>
       </div>
     </div>

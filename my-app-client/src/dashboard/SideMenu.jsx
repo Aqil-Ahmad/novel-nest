@@ -118,7 +118,14 @@ const SideMenu = () => {
                 {/* <SidebarItem href="/shop" icon={HiBookOpen}>
                   <p className="ml-3">Library</p>
                 </SidebarItem> */}
-                <SidebarItem href="/ChapterReader" icon={HiBookOpen}>
+                <SidebarItem 
+                  href="#" 
+                  icon={HiBookOpen} 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate('/ChapterReader');
+                  }}
+                >
                   <p className="ml-3">My Library</p>
                 </SidebarItem>
                 <SidebarItem href="/user/dashboard/profile" icon={HiUser}>

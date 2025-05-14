@@ -47,12 +47,11 @@ const Bookmarks = () => {
                       </div>
                     </td>
                     <td className="py-2">{b.chapterNumber}: {b.chapterTitle}</td>
-                    <td className="py-2">
-                      <button
-                        className="bg-[#5DD62C] text-black px-3 py-1 rounded hover:bg-[#4cc01f]"
+                    <td className="py-2">                      <button
+                        className="bg-[#5DD62C] text-black font-semibold px-4 py-1 rounded hover:bg-[#4cc01f] transition-colors"
                         onClick={() => navigate(`/ChapterReader/${b.bookId}/${b.chapterNumber}`)}
                       >
-                        Open
+                        Read Now
                       </button>
                     </td>
                   </tr>

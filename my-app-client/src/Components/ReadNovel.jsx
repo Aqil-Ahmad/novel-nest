@@ -13,16 +13,35 @@ const ReadNovel = () => {
 
   useEffect(() => {
     const fetchHistory = async () => {
-      if (!user) {
-        setError('Please log in to view your library.');
-        setLoading(false);
-        return;
-      }
       try {
+        // Check for token first
         const token = localStorage.getItem('token');
+        if (!token) {
+          setError('Please log in to view your library.');
+          setLoading(false);
+          return;
+        }
+
+        // Then check for user in context
+        if (!user || !user.id) {
+          console.log("User not found in context, attempting with token anyway");
+        }
+
         const res = await fetch('http://localhost:3000/api/users/history', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError('Your session has expired. Please log in again.');
+            localStorage.removeItem('token');
+          } else {
+            setError(`Error fetching library: ${res.status}`);
+          }
+          setLoading(false);
+          return;
+        }
+        
         const data = await res.json();
         if (data.success) {
           setHistory(data.history);
@@ -30,11 +49,13 @@ const ReadNovel = () => {
           setError(data.message || 'Failed to fetch history');
         }
       } catch (err) {
-        setError(err.message);
+        console.error('Library fetch error:', err);
+        setError(err.message || 'An error occurred while fetching your library');
       } finally {
         setLoading(false);
       }
     };
+    
     fetchHistory();
   }, [user]);
 
@@ -111,12 +132,11 @@ const ReadNovel = () => {
                 <div className="p-6 flex flex-col flex-1">
                   <h2 className="text-xl font-bold text-white mb-2">{book.book_title}</h2>
                   <p className="text-gray-300 mb-2">by {book.authorName}</p>
-                  <p className="text-gray-400 mb-4 text-sm">Last read: Chapter {item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</p>
-                  <button
+                  <p className="text-gray-400 mb-4 text-sm">Last read: Chapter {item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</p>                  <button
                     className="mt-auto block w-full text-center bg-[#5DD62C] text-black font-semibold py-2 px-4 rounded hover:bg-[#4cc01f] transition-colors"
                     onClick={() => navigate(`/ChapterReader/${item.bookId}/${item.lastChapterRead}`)}
                   >
-                    Continue
+                    Continue Reading
                   </button>
                 </div>
               </div>
