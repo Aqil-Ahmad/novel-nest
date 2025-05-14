@@ -26,6 +26,7 @@ import Bookmarks from '../dashboard/Bookmarks';
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../contects/AuthProider';
 import { useNavigate } from 'react-router-dom';
+import ManageChapter from "../dashboard/ManageChapter";
 
 function UserReadingHistoryTableWrapper() {
   const { user } = useContext(AuthContext);
@@ -161,6 +162,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/dashboard/chapters",
         element: <PrivateRoute><ChapterManagement /></PrivateRoute>
+      },
+      {
+        path: "/admin/dashboard/manage-chapters",
+        element: <PrivateRoute role="admin"><ManageChapter /></PrivateRoute>
       }
     ]
   },
