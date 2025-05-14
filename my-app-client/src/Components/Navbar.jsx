@@ -24,9 +24,8 @@ const Navbar = () => {
   // nav items
   const navItems = [
     {link: "Home",path: '/'},
-    {link: "Shop",path: '/shop'},
-    // Sell Your Book/Login button logic handled below
-    {link: "Library",path: '/ChapterReader'}
+    {link: "Library",path: '/shop'},
+    {link: "My Library",path: '/ChapterReader'}
   ];
 
   // Handler for dashboard navigation

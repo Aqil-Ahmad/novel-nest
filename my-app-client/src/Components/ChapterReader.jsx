@@ -306,11 +306,6 @@ const ChapterReader = () => {
           </button>
         </div>
       </main>
-      
-      {/* Footer */}
-      <footer className="bg-black text-[#5DD62C] p-4 text-center">
-        <p>© {new Date().getFullYear()} Novel Nest. All rights reserved.</p>
-      </footer>
     </div>
   );
 };

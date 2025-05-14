@@ -1,36 +1,76 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contects/AuthProider';
 
 const ReadNovel = () => {
-  const [books, setBooks] = useState([]);
+  const { user } = useContext(AuthContext);
+  const [history, setHistory] = useState([]);
+  const [bookDetails, setBookDetails] = useState({});
+  const [chapterTitles, setChapterTitles] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/all-books');
-        if (!response.ok) {
-          throw new Error('Failed to fetch books');
-        }
-        const data = await response.json();
-        setBooks(data);
+    const fetchHistory = async () => {
+      if (!user) {
+        setError('Please log in to view your library.');
         setLoading(false);
+        return;
+      }
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:3000/api/users/history', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setHistory(data.history);
+        } else {
+          setError(data.message || 'Failed to fetch history');
+        }
       } catch (err) {
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
+    fetchHistory();
+  }, [user]);
 
-    fetchBooks();
-  }, []);
+  useEffect(() => {
+    const fetchBooksAndChapters = async () => {
+      if (history.length === 0) return;
+      const details = {};
+      const chapters = {};
+      await Promise.all(history.map(async (item) => {
+        try {
+          const res = await fetch(`http://localhost:3000/api/books/${item.bookId}`);
+          const data = await res.json();
+          if (data.success && data.book) {
+            details[item.bookId] = data.book;
+          }
+          if (item.lastChapterRead) {
+            const chapRes = await fetch(`http://localhost:3000/api/books/${item.bookId}/chapters/${item.lastChapterRead}`);
+            const chapData = await chapRes.json();
+            if (chapData.success && chapData.chapter) {
+              chapters[`${item.bookId}_${item.lastChapterRead}`] = chapData.chapter.title;
+            }
+          }
+        } catch (e) { /* ignore individual errors */ }
+      }));
+      setBookDetails(details);
+      setChapterTitles(chapters);
+    };
+    fetchBooksAndChapters();
+  }, [history]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-t-[#5DD62C] border-r-transparent border-b-[#5DD62C] border-l-transparent"></div>
-          <p className="mt-4 text-lg text-[#5DD62C]">Loading books...</p>
+          <p className="mt-4 text-lg text-[#5DD62C]">Loading your library...</p>
         </div>
       </div>
     );
@@ -47,33 +87,45 @@ const ReadNovel = () => {
     );
   }
 
+  // Only show books that are in progress (not 100% complete)
+  const inProgress = history.filter(item => (item.percentComplete || 0) < 100);
+
   return (
     <div className="min-h-screen bg-black py-20 px-4 lg:px-24">
-      <h1 className="text-4xl font-bold text-[#5DD62C] mb-8 text-center">Available Novels</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {books.map((book) => (
-          <div key={book._id} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-            <img 
-              src={book.image_url} 
-              alt={book.book_title} 
-              className="w-full h-64 object-cover"
-            />
-            <div className="p-6">
-              <h2 className="text-xl font-bold text-white mb-2">{book.book_title}</h2>
-              <p className="text-gray-300 mb-4">by {book.authorName}</p>
-              <Link 
-                to={`/ChapterReader/${book._id}`}
-                className="block w-full text-center bg-[#5DD62C] text-black font-semibold py-2 px-4 rounded hover:bg-[#4cc01f] transition-colors"
-              >
-                Start Reading
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+      <h1 className="text-4xl font-bold text-[#5DD62C] mb-8 text-center">My Library</h1>
+      {inProgress.length === 0 ? (
+        <p className="text-gray-400 text-center">No novels in progress. Start reading from the Library!</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {inProgress.map((item) => {
+            const book = bookDetails[item.bookId];
+            const chapterTitle = chapterTitles[`${item.bookId}_${item.lastChapterRead}`];
+            if (!book) return null;
+            return (
+              <div key={item.bookId} className="bg-gray-800 rounded-lg overflow-hidden shadow-lg flex flex-col">
+                <img 
+                  src={book.image_url} 
+                  alt={book.book_title} 
+                  className="w-full h-64 object-cover"
+                />
+                <div className="p-6 flex flex-col flex-1">
+                  <h2 className="text-xl font-bold text-white mb-2">{book.book_title}</h2>
+                  <p className="text-gray-300 mb-2">by {book.authorName}</p>
+                  <p className="text-gray-400 mb-4 text-sm">Last read: Chapter {item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</p>
+                  <button
+                    className="mt-auto block w-full text-center bg-[#5DD62C] text-black font-semibold py-2 px-4 rounded hover:bg-[#4cc01f] transition-colors"
+                    onClick={() => navigate(`/ChapterReader/${item.bookId}/${item.lastChapterRead}`)}
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
 
-export default ReadNovel; 
+export default ReadNovel;

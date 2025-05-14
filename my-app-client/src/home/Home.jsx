@@ -6,7 +6,7 @@ import Review from './Review'
 
 const Home = () => {
   return (
-    <div style={{ background: 'black', margin: 0, padding: 0 }}>
+    <div className="min-h-screen bg-black flex flex-col">
       <Banner />
       <BestSellerBooks />
       <FavBook />
