@@ -4,7 +4,6 @@ import {
 import App from '../App';
 import Home from "../home/Home";
 import Shop from "../shop/Shop";
-import About from "../Components/About";
 import ChapterReader from "../Components/ChapterReader";
 import SingleBook from "../shop/SingleBook";
 import DashboradLayout from "../dashboard/DashboradLayout";
@@ -100,10 +99,6 @@ const router = createBrowserRouter([
       {
         path: "/shop",
         element: <Shop />
-      },
-      {
-        path: "/about",
-        element: <About />
       },
       // Updated routes for reading novels
       {

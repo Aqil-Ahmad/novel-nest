@@ -7,8 +7,6 @@ import { Link } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { FaCartShopping } from 'react-icons/fa6';
-
 // import required modules
 import { Pagination } from 'swiper/modules';
 
@@ -47,18 +45,14 @@ const BookCards = ({ books, headline }) => {
               <Link to={`/book/${book._id}`}>
                 <div className='relative'>
                   <img src={book.image_url} alt="" />
-                  <div className='absolute top-3 right-3 bg-black hover:bg-[#6b6b6b] p-2 rounded'>
-                    <FaCartShopping className='w-4 h-4 text-[#5DD62C]' />
-                  </div>
+                  {/* Removed cart icon */}
                 </div>
                 <div className='text-[#5DD62C]'>
                   <div>
                     <h3>{book.book_title}</h3>
                     <p>{book.authorName}</p>
                   </div>
-                  <div>
-                    <p>Rs 500.00</p>
-                  </div>
+                  {/* Removed price */}
                 </div>
               </Link>
             </SwiperSlide>

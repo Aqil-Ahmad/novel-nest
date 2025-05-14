@@ -1,9 +1,1 @@
-import React from 'react'
-
-const About = () => {
-  return (
-    <div>About</div>
-  )
-}
-
-export default About
+// Remove About.jsx component file as the About page is no longer needed
