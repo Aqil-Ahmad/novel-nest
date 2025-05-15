@@ -7,6 +7,8 @@ const userHistoryController = require('../controllers/userHistoryController');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const userLoginsController = require('../controllers/userLoginsController');
+const adminStatsController = require('../controllers/adminStatsController');
 
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -82,5 +84,11 @@ router.get('/profile-pic/:userId', async (req, res) => {
 // User reading history/progress
 router.post('/history', auth, userHistoryController.logReadingProgress);
 router.get('/history', auth, userHistoryController.getUserHistory);
+
+// User login analytics for admin dashboard
+router.get('/user-logins', auth, userLoginsController.getUserLogins);
+
+// Admin analytics: total chapters read by all users per day
+router.get('/admin/chapters-read', auth, adminStatsController.getChaptersReadByDate);
 
 module.exports = router;

@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { Card, Dropdown, Modal } from "flowbite-react";
 import { AuthContext } from '../contects/AuthProider';
-import SideMenu from './SideMenu';
 
 const Profile = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -74,7 +73,6 @@ const Profile = () => {
 
   return (
     <div className="flex min-h-screen bg-black">
-      <SideMenu />
       <main className="flex-1 flex justify-center items-center py-3 px-4">
         <Card className="w-80 sm:w-96 h-auto bg-black border border-[#5DD62C]/30">
           <div className="flex justify-end px-4 pt-4">

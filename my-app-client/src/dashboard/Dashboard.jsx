@@ -241,40 +241,13 @@ const Dashboard = () => {
           const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
           
           usersList = Array(10).fill().map((_, i) => {
-            // Random date between six months ago and now
+            // Random date between sixMonthsAgo and now
             const randomTime = sixMonthsAgo.getTime() + Math.random() * (now.getTime() - sixMonthsAgo.getTime());
             return {
               _id: `demo-user-${i}`,
               name: `Demo User ${i}`,
               role: i < 2 ? 'admin' : 'user',
               createdAt: new Date(randomTime).toISOString()
-            };
-          });
-        }
-        
-        // Create demo login data if we couldn't fetch real login data
-        if (userLoginData.length === 0) {
-          console.log("No login data fetched, creating demo login data");
-          
-          // Create random login events for this month
-          const now = new Date();
-          const startOfCurrentMonth = startOfMonth(now);
-          
-          // Generate between 30-50 login events for the demo
-          const loginCount = Math.floor(Math.random() * 20) + 30;
-          userLoginData = Array(loginCount).fill().map(() => {
-            // Random user from our user list
-            const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
-            // Random date in current month
-            const randomDays = Math.floor(Math.random() * 30);
-            const loginDate = new Date(startOfCurrentMonth);
-            loginDate.setDate(loginDate.getDate() + randomDays);
-            
-            return {
-              userId: randomUser._id,
-              userName: randomUser.name,
-              timestamp: loginDate.toISOString(),
-              status: 'success'
             };
           });
         }
@@ -312,6 +285,51 @@ const Dashboard = () => {
       fetchAuthorBooks();
     }
   }, [user, getDemoBooks]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        // Fetch books (existing logic)
+        // ...existing code...
+        // Fetch user logins for the bar chart
+        const loginResponse = await fetch('http://localhost:3000/api/user-logins', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        let logins = [];
+        if (loginResponse.ok) {
+          const loginData = await loginResponse.json();
+          logins = loginData.logins || [];
+        }
+        // Prepare bar chart data for the last 30 days
+        const now = new Date();
+        const start = startOfMonth(now);
+        const end = endOfMonth(now);
+        const allDays = eachDayOfInterval({ start, end });
+        const loginsByDate = {};
+        allDays.forEach(day => {
+          const dateKey = format(day, 'yyyy-MM-dd');
+          loginsByDate[dateKey] = 0;
+        });
+        logins.forEach(({ date, count }) => {
+          if (loginsByDate[date] !== undefined) {
+            loginsByDate[date] = count;
+          }
+        });
+        const labels = allDays.map(day => format(day, 'MMM d'));
+        const dateKeys = allDays.map(day => format(day, 'yyyy-MM-dd'));
+        const data = dateKeys.map(dateKey => loginsByDate[dateKey] || 0);
+        setBarChartData({ labels, data });
+        // ...existing code for books, users, etc...
+      } catch (err) {
+        setError('Error loading dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, [user]);
 
   useEffect(() => {
     if (books.length > 0) {
@@ -373,21 +391,6 @@ const Dashboard = () => {
             }
           }
         });
-      } else {
-        // Fallback if no login data available - create some random data points
-        console.log("No login data available, using sample data");
-        allDays.forEach(day => {
-          const dateKey = format(day, 'yyyy-MM-dd');
-          // Add random number of logins (0-5) for each day
-          loginsByDate[dateKey] = Math.floor(Math.random() * 6);
-        });
-        
-        // Ensure at least some days have more significant activity (5-10 logins)
-        for (let i = 0; i < 5; i++) {
-          const randomDay = allDays[Math.floor(Math.random() * allDays.length)];
-          const dateKey = format(randomDay, 'yyyy-MM-dd');
-          loginsByDate[dateKey] = Math.floor(Math.random() * 6) + 5; // 5-10 logins
-        }
       }
       
       books.forEach(book => {
@@ -439,6 +442,49 @@ const Dashboard = () => {
       setBarChartData({ labels, data });
     }
   }, [books]);
+
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      const fetchChaptersRead = async () => {
+        setLoading(true);
+        try {
+          const token = localStorage.getItem('token');
+          const response = await fetch('http://localhost:3000/api/admin/chapters-read', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          let chapters = [];
+          if (response.ok) {
+            const data = await response.json();
+            chapters = data.chapters || [];
+          }
+          // Prepare bar chart data for the current month
+          const now = new Date();
+          const start = startOfMonth(now);
+          const end = endOfMonth(now);
+          const allDays = eachDayOfInterval({ start, end });
+          const chaptersByDate = {};
+          allDays.forEach(day => {
+            const dateKey = format(day, 'yyyy-MM-dd');
+            chaptersByDate[dateKey] = 0;
+          });
+          chapters.forEach(({ date, count }) => {
+            if (chaptersByDate[date] !== undefined) {
+              chaptersByDate[date] = count;
+            }
+          });
+          const labels = allDays.map(day => format(day, 'MMM d'));
+          const dateKeys = allDays.map(day => format(day, 'yyyy-MM-dd'));
+          const data = dateKeys.map(dateKey => chaptersByDate[dateKey] || 0);
+          setBarChartData({ labels, data });
+        } catch (err) {
+          setError('Error loading admin chapters read stats');
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchChaptersRead();
+    }
+  }, [user]);
 
   if (loading) return <div className="text-center text-[#5DD62C]">Loading dashboard...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -522,14 +568,14 @@ const Dashboard = () => {
           
           {/* Bar Chart for User Logins per Date */}
           <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-2xl flex-grow">
-            <div className="text-lg text-gray-300 mb-2 text-center">User Logins per Day (This Month)</div>
+            <div className="text-lg text-gray-300 mb-2 text-center">Chapters Read by Date</div>
             {barChartData.labels.length > 0 ? (
               <Bar
                 data={{
                   labels: barChartData.labels,
                   datasets: [
                     {
-                      label: 'Logins',
+                      label: 'Chapters Read',
                       data: barChartData.data,
                       backgroundColor: '#5DD62C',
                       borderRadius: 6,
@@ -540,26 +586,15 @@ const Dashboard = () => {
                   responsive: true,
                   plugins: {
                     legend: { display: false },
-                    tooltip: {
-                      callbacks: {
-                        title: (tooltipItems) => {
-                          return tooltipItems[0].label;
-                        },
-                        label: (context) => {
-                          const value = context.parsed.y;
-                          return value === 1 ? '1 login' : `${value} logins`;
-                        }
-                      }
-                    }
                   },
                   scales: {
                     x: {
-                      ticks: { color: '#5DD62C', font: { size: 11 }, maxRotation: 90, minRotation: 45 },
+                      ticks: { color: '#5DD62C', font: { size: 11 }, maxRotation: 90, minRotation: 45, autoSkip: false },
                       grid: { color: '#333' },
                     },
                     y: {
                       beginAtZero: true,
-                      ticks: { color: '#5DD62C', font: { size: 12 }, precision: 0 },
+                      ticks: { color: '#5DD62C', font: { size: 12 } },
                       grid: { color: '#333' },
                     },
                   },
@@ -567,7 +602,7 @@ const Dashboard = () => {
                 height={220}
               />
             ) : (
-              <div className="text-gray-500">No login data available for this month</div>
+              <div className="text-gray-500">No data yet</div>
             )}
           </div>
         </div>

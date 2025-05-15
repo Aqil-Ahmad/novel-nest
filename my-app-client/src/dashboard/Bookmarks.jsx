@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../contects/AuthProider';
 import { useNavigate } from 'react-router-dom';
-import SideMenu from './SideMenu';
 
 const Bookmarks = () => {
   const { user } = useContext(AuthContext);
@@ -19,7 +18,6 @@ const Bookmarks = () => {
 
   return (
     <div className="flex min-h-screen bg-black">
-      <SideMenu />
       <main className="flex-1">
         <div className="p-8 max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Bookmarked Chapters</h2>

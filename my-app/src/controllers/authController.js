@@ -84,7 +84,7 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const { usersCollection } = getDB();
+    const { usersCollection, userLoginsCollection } = getDB();
 
     // Find user
     const user = await usersCollection.findOne({ email });
@@ -103,6 +103,13 @@ const login = async (req, res) => {
         message: "Invalid credentials" 
       });
     }
+
+    // Log the login event
+    await userLoginsCollection.insertOne({
+      userId: user._id,
+      email: user.email,
+      timestamp: new Date()
+    });
 
     // Return user data
     const userData = {
