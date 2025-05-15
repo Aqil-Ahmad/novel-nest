@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../contects/AuthProider';
 import { useNavigate } from 'react-router-dom';
-import SideMenu from './SideMenu';
+import PropTypes from 'prop-types';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -137,109 +137,106 @@ const UserDashboard = () => {
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="flex min-h-screen bg-black">
-      <SideMenu />
-      <main className="flex-1">
-        <div className="p-8 max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Your Reading Stats</h2>
-          {/* Chart Section at the Top: Side by Side */}
-          <div className="mb-8 flex flex-col lg:flex-row gap-8 items-center justify-center w-full">
-            <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-sm flex-shrink-0 flex items-center justify-center">
-              <div className="w-full">
-                <div className="text-lg text-gray-300 mb-2 text-center">Novels Read by Category</div>
-                {Object.keys(categoryStats).length > 0 ? (
-                  <Pie
-                    data={{
-                      labels: Object.keys(categoryStats),
-                      datasets: [
-                        {
-                          data: Object.values(categoryStats),
-                          backgroundColor: [
-                            '#5DD62C', '#FFD700', '#1E90FF', '#FF69B4', '#FF6347', '#8A2BE2', '#00CED1', '#FFA500', '#A52A2A', '#228B22', '#DC143C', '#20B2AA', '#FF4500', '#2E8B57', '#B22222', '#00BFFF', '#FF1493', '#7FFF00', '#8B008B', '#556B2F'
-                          ],
-                          borderWidth: 1,
-                        },
-                      ],
-                    }}
-                    options={{
-                      plugins: {
-                        legend: {
-                          labels: {
-                            color: '#5DD62C',
-                          },
-                        },
-                      },
-                    }}
-                    width={300}
-                    height={300}
-                  />
-                ) : (
-                  <div className="text-gray-500">No data yet</div>
-                )}
-              </div>
-            </div>
-            {/* Bar Chart for Chapters Read by Date */}
-            <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-2xl flex-grow">
-              <div className="text-lg text-gray-300 mb-2 text-center">Chapters Read by Date</div>
-              {barChartData.labels.length > 0 ? (
-                <Bar
+    <main className="flex-1">
+      <div className="p-8 max-w-5xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Your Reading Stats</h2>
+        {/* Chart Section at the Top: Side by Side */}
+        <div className="mb-8 flex flex-col lg:flex-row gap-8 items-center justify-center w-full">
+          <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-sm flex-shrink-0 flex items-center justify-center">
+            <div className="w-full">
+              <div className="text-lg text-gray-300 mb-2 text-center">Novels Read by Category</div>
+              {Object.keys(categoryStats).length > 0 ? (
+                <Pie
                   data={{
-                    labels: barChartData.labels,
+                    labels: Object.keys(categoryStats),
                     datasets: [
                       {
-                        label: 'Chapters Read',
-                        data: barChartData.data,
-                        backgroundColor: '#5DD62C',
-                        borderRadius: 6,
+                        data: Object.values(categoryStats),
+                        backgroundColor: [
+                          '#5DD62C', '#FFD700', '#1E90FF', '#FF69B4', '#FF6347', '#8A2BE2', '#00CED1', '#FFA500', '#A52A2A', '#228B22', '#DC143C', '#20B2AA', '#FF4500', '#2E8B57', '#B22222', '#00BFFF', '#FF1493', '#7FFF00', '#8B008B', '#556B2F'
+                        ],
+                        borderWidth: 1,
                       },
                     ],
                   }}
                   options={{
-                    responsive: true,
                     plugins: {
-                      legend: { display: false },
-                    },
-                    scales: {
-                      x: {
-                        ticks: { color: '#5DD62C', font: { size: 11 }, maxRotation: 90, minRotation: 45, autoSkip: false },
-                        grid: { color: '#333' },
-                      },
-                      y: {
-                        beginAtZero: true,
-                        ticks: { color: '#5DD62C', font: { size: 12 } },
-                        grid: { color: '#333' },
+                      legend: {
+                        labels: {
+                          color: '#5DD62C',
+                        },
                       },
                     },
                   }}
-                  height={220}
+                  width={300}
+                  height={300}
                 />
               ) : (
                 <div className="text-gray-500">No data yet</div>
               )}
             </div>
           </div>
-          {/* Stats Section at the Bottom */}
-          <div className="mb-8 flex flex-col md:flex-row gap-8 items-center justify-center flex-wrap">
-            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
-              <div className="text-4xl font-bold text-[#5DD62C]">{totalBooksRead}</div>
-              <div className="text-lg text-gray-300">Books Read</div>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
-              <div className="text-4xl font-bold text-[#5DD62C]">{uniqueAuthors}</div>
-              <div className="text-lg text-gray-300">Unique Authors</div>
-            </div>
-            <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
-              <div className="text-2xl font-bold text-[#5DD62C]">{mostReadCategory || 'N/A'}</div>
-              <div className="text-lg text-gray-300">Most Read Category</div>
-            </div>
-          </div>
-          {/* Link to full reading history */}
-          <div className="text-center mt-8">
-            <a href="/user/dashboard/history" className="inline-block bg-[#5DD62C] text-black px-6 py-2 rounded font-semibold hover:bg-[#4cc01f] transition">View Reading History</a>
+          {/* Bar Chart for Chapters Read by Date */}
+          <div className="bg-gray-900 rounded-lg p-6 shadow w-full max-w-2xl flex-grow">
+            <div className="text-lg text-gray-300 mb-2 text-center">Chapters Read by Date</div>
+            {barChartData.labels.length > 0 ? (
+              <Bar
+                data={{
+                  labels: barChartData.labels,
+                  datasets: [
+                    {
+                      label: 'Chapters Read',
+                      data: barChartData.data,
+                      backgroundColor: '#5DD62C',
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { display: false },
+                  },
+                  scales: {
+                    x: {
+                      ticks: { color: '#5DD62C', font: { size: 11 }, maxRotation: 90, minRotation: 45, autoSkip: false },
+                      grid: { color: '#333' },
+                    },
+                    y: {
+                      beginAtZero: true,
+                      ticks: { color: '#5DD62C', font: { size: 12 } },
+                      grid: { color: '#333' },
+                    },
+                  },
+                }}
+                height={220}
+              />
+            ) : (
+              <div className="text-gray-500">No data yet</div>
+            )}
           </div>
         </div>
-      </main>
-    </div>
+        {/* Stats Section at the Bottom */}
+        <div className="mb-8 flex flex-col md:flex-row gap-8 items-center justify-center flex-wrap">
+          <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+            <div className="text-4xl font-bold text-[#5DD62C]">{totalBooksRead}</div>
+            <div className="text-lg text-gray-300">Books Read</div>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+            <div className="text-4xl font-bold text-[#5DD62C]">{uniqueAuthors}</div>
+            <div className="text-lg text-gray-300">Unique Authors</div>
+          </div>
+          <div className="bg-gray-900 rounded-lg p-6 shadow text-center w-full max-w-xs min-w-[220px] flex-1">
+            <div className="text-2xl font-bold text-[#5DD62C]">{mostReadCategory || 'N/A'}</div>
+            <div className="text-lg text-gray-300">Most Read Category</div>
+          </div>
+        </div>
+        {/* Link to full reading history */}
+        <div className="text-center mt-8">
+          <a href="/user/dashboard/history" className="inline-block bg-[#5DD62C] text-black px-6 py-2 rounded font-semibold hover:bg-[#4cc01f] transition">View Reading History</a>
+        </div>
+      </div>
+    </main>
   );
 };
 
@@ -248,57 +245,61 @@ export default UserDashboard;
 // Restore the previous UserReadingHistoryTable export for use in the router
 export function UserReadingHistoryTable({ history, bookDetails, chapterTitles, navigate }) {
   return (
-    <div className="flex min-h-screen bg-black">
-      <SideMenu />
-      <main className="flex-1">
-        <div className="p-8 max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Your Reading History</h2>
-          {history.length === 0 ? (
-            <p className="text-gray-400 text-center">No reading history yet.</p>
-          ) : (
-            <table className="w-full bg-black text-[#5DD62C] rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2">Book</th>
-                  <th className="py-2">Last Chapter</th>
-                  <th className="py-2">Progress</th>
-                  <th className="py-2">Last Read</th>
-                  <th className="py-2">Continue</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((item) => {
-                  const book = bookDetails[item.bookId];
-                  const chapterTitle = chapterTitles[`${item.bookId}_${item.lastChapterRead}`];
-                  return (
-                    <tr key={item.bookId} className="border-b border-gray-700">
-                      <td className="py-2 flex items-center gap-3">
-                        {book && book.image_url && (
-                          <img src={book.image_url} alt={book.book_title} className="w-12 h-16 object-cover rounded shadow" />
-                        )}
-                        <div>
-                          <div className="font-bold text-[#5DD62C]">{book ? book.book_title : item.bookId}</div>
-                          <div className="text-xs text-gray-400">{book ? `by ${book.authorName}` : ''}</div>
-                        </div>
-                      </td>
-                      <td className="py-2">{item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</td>
-                      <td className="py-2">{item.percentComplete || 0}%</td>
-                      <td className="py-2">{item.updatedAt ? new Date(item.updatedAt).toLocaleString() : ''}</td>
-                      <td className="py-2">                        <button
-                          className="bg-[#5DD62C] text-black font-semibold px-4 py-1 rounded hover:bg-[#4cc01f] transition-colors"
-                          onClick={() => navigate(`/ChapterReader/${item.bookId}/${item.lastChapterRead}`)}
-                        >
-                          Continue Reading
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </main>
-    </div>
+    <main className="flex-1">
+      <div className="p-8 max-w-3xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 text-[#5DD62C] text-center">Your Reading History</h2>
+        {history.length === 0 ? (
+          <p className="text-gray-400 text-center">No reading history yet.</p>
+        ) : (
+          <table className="w-full bg-black text-[#5DD62C] rounded-lg">
+            <thead>
+              <tr>
+                <th className="py-2">Book</th>
+                <th className="py-2">Last Chapter</th>
+                <th className="py-2">Progress</th>
+                <th className="py-2">Last Read</th>
+                <th className="py-2">Continue</th>
+              </tr>
+            </thead>
+            <tbody>
+              {history.map((item) => {
+                const book = bookDetails[item.bookId];
+                const chapterTitle = chapterTitles[`${item.bookId}_${item.lastChapterRead}`];
+                return (
+                  <tr key={item.bookId} className="border-b border-gray-700">
+                    <td className="py-2 flex items-center gap-3">
+                      {book && book.image_url && (
+                        <img src={book.image_url} alt={book.book_title} className="w-12 h-16 object-cover rounded shadow" />
+                      )}
+                      <div>
+                        <div className="font-bold text-[#5DD62C]">{book ? book.book_title : item.bookId}</div>
+                        <div className="text-xs text-gray-400">{book ? `by ${book.authorName}` : ''}</div>
+                      </div>
+                    </td>
+                    <td className="py-2">{item.lastChapterRead}{chapterTitle ? `: ${chapterTitle}` : ''}</td>
+                    <td className="py-2">{item.percentComplete || 0}%</td>
+                    <td className="py-2">{item.updatedAt ? new Date(item.updatedAt).toLocaleString() : ''}</td>
+                    <td className="py-2">                        <button
+                        className="bg-[#5DD62C] text-black font-semibold px-4 py-1 rounded hover:bg-[#4cc01f] transition-colors"
+                        onClick={() => navigate(`/ChapterReader/${item.bookId}/${item.lastChapterRead}`)}
+                      >
+                        Continue Reading
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </main>
   );
 }
+
+UserReadingHistoryTable.propTypes = {
+  history: PropTypes.array.isRequired,
+  bookDetails: PropTypes.object.isRequired,
+  chapterTitles: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired
+};

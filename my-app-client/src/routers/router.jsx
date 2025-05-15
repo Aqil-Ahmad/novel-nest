@@ -171,19 +171,25 @@ const router = createBrowserRouter([
   },
   {
     path: '/user/dashboard',
-    element: <PrivateRoute role="user"><UserDashboard /></PrivateRoute>
-  },
-  {
-    path: '/user/dashboard/history',
-    element: <UserReadingHistoryTableWrapper />
-  },
-  {
-    path: '/user/dashboard/bookmarks',
-    element: <PrivateRoute role="user"><Bookmarks /></PrivateRoute>
-  },
-  {
-    path: '/user/dashboard/profile',
-    element: <PrivateRoute role="user"><Profile /></PrivateRoute>
+    element: <DashboradLayout />,
+    children: [
+      {
+        path: "/user/dashboard",
+        element: <PrivateRoute role="user"><UserDashboard /></PrivateRoute>
+      },
+      {
+        path: "/user/dashboard/history",
+        element: <PrivateRoute role="user"><UserReadingHistoryTableWrapper /></PrivateRoute>
+      },
+      {
+        path: "/user/dashboard/bookmarks",
+        element: <PrivateRoute role="user"><Bookmarks /></PrivateRoute>
+      },
+      {
+        path: "/user/dashboard/profile",
+        element: <PrivateRoute role="user"><Profile /></PrivateRoute>
+      }
+    ]
   },
   {
     path: "sign-up",

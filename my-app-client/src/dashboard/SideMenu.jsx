@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import {
-  HiArrowSmRight,
   HiChartPie,
   HiInbox,
   HiOutlineCloudUpload,
@@ -13,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import userImg from "../assets/profile.jpg";
 import { AuthContext } from '../contects/AuthProider';
-import Logout from '../Components/Logout';  
+import Logout from '../Components/Logout';
 
 const SidebarItem = ({ href, icon: Icon, children, className, onClick }) => {
   return (
@@ -54,11 +53,6 @@ const SideMenu = () => {
 
   const handleCancelLogout = () => {
     setShowLogoutPopup(false);
-  };
-
-  const handleUploadChapter = (e) => {
-    e.preventDefault();
-    navigate('/admin/dashboard/chapters');
   };
 
   return (

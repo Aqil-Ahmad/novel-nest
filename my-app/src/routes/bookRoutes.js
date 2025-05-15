@@ -7,6 +7,12 @@ const chapterController = require('../controllers/chapterController');
 
 // Book routes (API version)
 router.get('/', bookController.getAllBooks);
+
+// Author-specific routes (must be before :id routes to avoid conflicts)
+router.get('/author', bookController.getBooksByAuthor);
+router.get('/by-author/:authorId', bookController.getBooksByAuthor); // Alternative route
+
+// Individual book routes
 router.get('/:id', bookController.getBookById);
 router.post('/', bookController.uploadBook);
 router.patch('/:id', bookController.updateBook);
